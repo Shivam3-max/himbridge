@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marketplace — Himbridge Global Trade Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Serif:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/portal.css">
+<link rel="icon" href="/assets/favicon.svg">
+<script>try{if((localStorage.getItem("hbg-lang")||"en")!=="en"){document.documentElement.style.visibility="hidden";setTimeout(function(){document.documentElement.style.visibility=""},2500)}}catch(e){}</script>
+</head>
+<body>
+<div id="site-header"></div>
+<main id="main">
+<div id="banner"></div>
+<div class="pagebar"><div class="wrap">
+  <div class="crumbs"><a href="/">Home</a> › Marketplace</div>
+  <h1>Export Marketplace</h1>
+  <p>Export-ready products from verified, audited manufacturers. Prices are indicative FOB — request a quotation for firm pricing.</p>
+</div></div>
+
+<div class="wrap section" style="display:grid;grid-template-columns:260px minmax(0,1fr);gap:20px" id="mk">
+  <aside>
+    <div class="block">
+      <div class="block-head saffron"><h3>Filter Products</h3></div>
+      <form class="block-body" id="filters">
+        <div class="field"><label for="q">Keyword</label><input id="q" name="q" placeholder="e.g. rug, planter, LED"></div>
+        <div class="field"><label>Collection</label>
+          <div class="small" style="display:grid;gap:6px">
+            <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="radio" name="c" value="" style="width:auto" checked> All collections</label>
+            <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="radio" name="c" value="crafted" style="width:auto"> Crafted <span class="tiny muted">— handmade &amp; natural</span></label>
+            <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="radio" name="c" value="engineered" style="width:auto"> Engineered <span class="tiny muted">— tech &amp; scale</span></label>
+          </div></div>
+        <div class="field"><label for="niche">Category</label><select id="niche" name="niche"><option value="">All categories</option></select></div>
+        <button class="btn" style="width:100%">Apply filters</button>
+        <button class="btn ghost" type="reset" style="width:100%;margin-top:8px">Clear</button>
+      </form>
+    </div>
+    <div class="block" style="margin-top:16px">
+      <div class="block-head green"><h3>Can't find it?</h3></div>
+      <div class="block-body small">Post a buying requirement and matched vendors will quote within 48 hours.<br><br><a class="btn sm green" href="/dashboard#post-rfq">Post RFQ</a></div>
+    </div>
+  </aside>
+  <section>
+    <div class="section-head" style="margin-bottom:12px"><span id="count" class="small muted">Loading…</span></div>
+    <div class="products" id="grid"></div>
+  </section>
+</div>
+</main>
+<div id="site-footer"></div>
+<style>@media (max-width:860px){#mk{grid-template-columns:minmax(0,1fr)!important}}</style>
+<script type="module">
+import { api, esc, getMeta, nicheMap, productCard, qs, pageBanner, collectionFromKey } from '/assets/app.js';
+qs('#banner').innerHTML = pageBanner('Marketplace', { img: '/assets/img/banner-marketplace.jpg', kicker: 'Marketplace', line: 'Factory-direct. Export-ready.', pos: '70% 60%' });
+const meta = await getMeta(); const niches = await nicheMap();
+const f = qs('#filters');
+f.niche.innerHTML += meta.niches.map((n) => `<option value="${n.slug}">${esc(n.name)}</option>`).join('');
+const params = new URLSearchParams(location.search);
+f.q.value = params.get('q') || ''; f.niche.value = params.get('niche') || '';
+f.querySelectorAll('[name=c]').forEach((r) => (r.checked = r.value === (params.get('c') || '')));
+
+async function load() {
+  const p = new URLSearchParams();
+  for (const k of ['q', 'niche']) if (f[k].value) p.set(k, f[k].value);
+  const c = f.querySelector('[name=c]:checked')?.value; if (c) p.set('c', c);
+  history.replaceState(null, '', '/marketplace' + (p.size ? '?' + p : ''));
+  const ap = new URLSearchParams(p); ap.delete('c'); if (c) ap.set('origin', collectionFromKey(c));
+  const rows = await api('/api/products?' + ap);
+  qs('#count').textContent = `${rows.length} product${rows.length === 1 ? '' : 's'} found`;
+  qs('#grid').innerHTML = rows.length ? rows.map((r) => productCard(r, niches)).join('') : '<div class="empty" style="grid-column:1/-1">No products match these filters yet. Try another category or <a href="/dashboard#post-rfq">post an RFQ</a>.</div>';
+}
+f.onsubmit = (e) => { e.preventDefault(); load(); };
+f.onreset = () => setTimeout(load);
+f.querySelectorAll('[name=c], #niche').forEach((el) => (el.onchange = load));
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "himbridge-global-portal",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Himbridge Global Trade Portal — verified sourcing, export to the world",
+  "scripts": {
+    "dev": "node --watch server/server.js",
+    "start": "node server/server.js",
+    "reset-db": "rm -rf data/himbridge.db data/himbridge.db-wal data/himbridge.db-shm data/uploads",
+    "build-map": "node tools/build-world-map.mjs"
+  },
+  "engines": { "node": ">=22.13" }
+}

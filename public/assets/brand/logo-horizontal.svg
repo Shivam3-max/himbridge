@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 80" role="img" aria-label="Himbridge Global Trade Portal">
+  
+  <g transform="translate(8 8)"><rect width="64" height="64" rx="14" fill="#0b2a5b"/><path d="M13 13.5 Q13 12 14.5 12 H20.5 Q22 12 22 13.5 V52 H13 Z" fill="#fff"/><path d="M42 13.5 Q42 12 43.5 12 H49.5 Q51 12 51 13.5 V52 H42 Z" fill="#fff"/><path d="M22 35 L32 16 L42 35 Z" fill="#f08a00"/><path d="M32 16 L27.3 24.9 L29.8 23.4 L32 25.4 L34.3 23.4 L36.7 24.9 Z" fill="#fff"/><rect x="13" y="35" width="38" height="5.5" fill="#fff"/><path d="M22 52 Q32 42.5 42 52" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></g>
+  <text x="86" y="40" font-family="'Noto Serif', Georgia, 'Times New Roman', serif" font-weight="700" font-size="30" letter-spacing="2.7" fill="#0b2a5b">HIMBRIDGE</text>
+  <text x="87" y="60" font-family="'Noto Sans', 'Helvetica Neue', Arial, sans-serif" font-weight="600" font-size="10.5" letter-spacing="2.9" fill="#f08a00">GLOBAL TRADE PORTAL</text>
+  <line x1="282" y1="56.5" x2="350" y2="56.5" stroke="#dde3ec" stroke-width="1"/>
+</svg>

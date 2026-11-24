@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Track Shipment — Himbridge Global Trade Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Serif:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/portal.css">
+<link rel="icon" href="/assets/favicon.svg">
+<script>try{if((localStorage.getItem("hbg-lang")||"en")!=="en"){document.documentElement.style.visibility="hidden";setTimeout(function(){document.documentElement.style.visibility=""},2500)}}catch(e){}</script>
+</head>
+<body>
+<div id="site-header"></div>
+<main id="main">
+<div id="banner"></div>
+<div class="pagebar"><div class="wrap">
+  <div class="crumbs"><a href="/">Home</a> › Track Shipment</div>
+  <h1>Track Your Shipment</h1>
+  <p>Enter the Himbridge order / tracking number shared on your order confirmation (format HBG-YYYY-NNNN).</p>
+</div></div>
+<div class="wrap section split">
+  <div>
+    <div class="block">
+      <div class="block-head saffron"><h3>Tracking enquiry</h3></div>
+      <form class="block-body" id="f" style="display:flex;gap:10px;flex-wrap:wrap">
+        <input name="code" placeholder="e.g. HBG-2026-0001" required style="flex:1;min-width:200px" aria-label="Tracking number">
+        <button class="btn">Track</button>
+      </form>
+    </div>
+    <div id="out" style="margin-top:16px"></div>
+  </div>
+  <div class="block">
+    <div class="block-head green"><h3>Need help?</h3></div>
+    <div class="block-body small">
+      <p>Try the demo tracking number <a href="?code=HBG-2026-0001"><b>HBG-2026-0001</b></a>.</p>
+      <p>For detailed documents (invoice, packing list, bill of lading), <a href="/login">log in</a> to your buyer dashboard.</p>
+      <p><b>Help desk:</b> +91 11 4000 0000<br><b>Email:</b> helpdesk@himbridge.trade</p>
+    </div>
+  </div>
+</div>
+</main>
+<div id="site-footer"></div>
+<script type="module">
+import { api, esc, getMeta, originChip, timeline, statusBadge, fmtDate, qs, pageBanner } from '/assets/app.js';
+qs('#banner').innerHTML = pageBanner('Tracking', { img: '/assets/img/banner-track.jpg', kicker: 'Shipment tracking', line: 'Know where your order is. Always.' });
+const { orderFlow } = await getMeta();
+const f = qs('#f');
+async function track(code) {
+  const out = qs('#out');
+  out.innerHTML = '<div class="empty">Searching…</div>';
+  try {
+    const o = await api('/api/track/' + encodeURIComponent(code.trim()));
+    out.innerHTML = `<div class="block"><div class="block-head"><h3>${esc(o.code)}</h3>${statusBadge(o.status, orderFlow)}</div>
+      <div class="block-body"><p><b>${esc(o.title)}</b></p>
+      <div class="kv" style="margin-bottom:14px"><span>Collection ${originChip(o.vendor_origin)}</span><span>Destination <b>${esc(o.destination)}</b></span><span>Incoterm <b>${esc(o.incoterm)}</b></span>
+      <span>Mode <b>${esc(o.mode || 'To be assigned')}</b></span><span>Route <b>${esc(o.origin_port || '—')} → ${esc(o.dest_port || '—')}</b></span><span>Booked <b>${fmtDate(o.created_at)}</b></span></div>
+      ${timeline(o, orderFlow)}</div></div>`;
+  } catch (e) { out.innerHTML = `<div class="banner warn">${esc(e.message)}</div>`; }
+}
+f.onsubmit = (e) => { e.preventDefault(); history.replaceState(null, '', '?code=' + encodeURIComponent(f.code.value.trim())); track(f.code.value); };
+const c = new URLSearchParams(location.search).get('code');
+if (c) { f.code.value = c; track(c); }
+</script>
+</body>
+</html>

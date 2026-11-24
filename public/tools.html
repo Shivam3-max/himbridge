@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trade Tools — Himbridge Global Trade Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Serif:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/portal.css">
+<link rel="icon" href="/assets/favicon.svg">
+<script>try{if((localStorage.getItem("hbg-lang")||"en")!=="en"){document.documentElement.style.visibility="hidden";setTimeout(function(){document.documentElement.style.visibility=""},2500)}}catch(e){}</script>
+</head>
+<body>
+<div id="site-header"></div>
+<main id="main">
+<div id="banner"></div>
+<div class="pagebar"><div class="wrap">
+  <div class="crumbs"><a href="/">Home</a> › Trade Tools</div>
+  <h1>Trade Tools &amp; Guides</h1>
+  <p>Estimate landed cost, find HS codes, understand Incoterms and prepare your export documents.</p>
+</div></div>
+
+<div class="wrap section grid" style="gap:20px">
+  <div class="split">
+    <div class="block" id="landed">
+      <div class="block-head saffron"><h3>Landed Cost Calculator</h3><span class="tiny muted">Estimate only — rates are editable</span></div>
+      <form class="block-body" id="calc">
+        <div class="grid-form three">
+          <div class="field"><label>Unit FOB price (USD)</label><input name="fob" type="number" step="0.01" value="15.40"></div>
+          <div class="field"><label>Quantity</label><input name="qty" type="number" value="1200"></div>
+          <div class="field"><label>Freight total (USD)</label><input name="freight" type="number" value="2800"></div>
+          <div class="field"><label>Insurance (% of CFR)</label><input name="ins" type="number" step="0.01" value="0.5"></div>
+          <div class="field"><label>Import duty (%)</label><input name="duty" type="number" step="0.1" value="6.5"></div>
+          <div class="field"><label>VAT / sales tax (%)</label><input name="vat" type="number" step="0.1" value="0"></div>
+          <div class="field"><label>Clearance &amp; local (USD)</label><input name="local" type="number" value="650"></div>
+          <div class="field"><label>Himbridge service fee (%)</label><input name="fee" type="number" step="0.1" value="5"></div>
+          <div class="field"><label>Duty basis</label><select name="basis"><option value="cif">CIF value (EU, UK, UAE, AU…)</option><option value="fob">FOB value (USA, Canada)</option></select></div>
+        </div>
+      </form>
+    </div>
+    <div class="block">
+      <div class="block-head green"><h3>Estimate</h3></div>
+      <div class="block-body"><table class="tbl" id="res"></table>
+      <p class="tiny muted" style="margin-top:10px">Duty rates vary by HS code, origin and current trade policy. Confirm with a licensed customs broker before pricing.</p></div>
+    </div>
+  </div>
+
+  <div class="block" id="hs">
+    <div class="block-head"><h3>HS Code Finder</h3><input id="hsq" placeholder="Search e.g. brass, rug, LED, chair" style="max-width:280px"></div>
+    <div class="table-wrap"><table class="tbl"><thead><tr><th>HS code</th><th>Description</th><th>Typical niche</th></tr></thead><tbody id="hsrows"></tbody></table></div>
+  </div>
+
+  <div class="grid g2">
+    <div class="block" id="incoterms">
+      <div class="block-head"><h3>Incoterms 2020 — Quick Guide</h3></div>
+      <div class="table-wrap"><table class="tbl"><thead><tr><th>Term</th><th>Seller covers</th><th>Risk passes</th></tr></thead><tbody>
+        <tr><td><b>EXW</b></td><td>Goods ready at factory</td><td>At seller's premises</td></tr>
+        <tr><td><b>FOB</b></td><td>Export clearance + loading on vessel</td><td>On board at origin port</td></tr>
+        <tr><td><b>CFR</b></td><td>FOB + main sea freight</td><td>On board at origin port</td></tr>
+        <tr><td><b>CIF</b></td><td>CFR + minimum insurance</td><td>On board at origin port</td></tr>
+        <tr><td><b>DAP</b></td><td>Delivery to named place, unpaid duties</td><td>At destination, before unloading</td></tr>
+        <tr><td><b>DDP</b></td><td>Everything incl. import duty &amp; taxes</td><td>At buyer's door</td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="block" id="docs">
+      <div class="block-head saffron"><h3>Export Documentation Checklist</h3><select id="lane" style="max-width:190px" aria-label="Factory country"><option value="IN">Factory in India</option><option value="CN">Factory in China</option></select></div>
+      <div class="block-body"><ul id="doclist" class="small" style="margin:0;padding-left:0;list-style:none;line-height:2"></ul></div>
+    </div>
+  </div>
+</div>
+</main>
+<div id="site-footer"></div>
+<script type="module">
+import { usd, esc, qs, pageBanner } from '/assets/app.js';
+qs('#banner').innerHTML = pageBanner('Trade tools', { img: '/assets/img/banner-tools.jpg', kicker: 'Trade tools', line: 'Price it right before you buy.', pos: 'center 40%' });
+
+const f = qs('#calc');
+function calc() {
+  const v = Object.fromEntries([...new FormData(f)].map(([k, x]) => [k, k === 'basis' ? x : Number(x) || 0]));
+  const fob = v.fob * v.qty, cfr = fob + v.freight, ins = cfr * v.ins / 100, cif = cfr + ins;
+  const duty = (v.basis === 'fob' ? fob : cif) * v.duty / 100;
+  const vat = (cif + duty) * v.vat / 100, fee = fob * v.fee / 100;
+  const total = cif + duty + vat + v.local + fee;
+  const rows = [['FOB goods value', fob], ['Freight', v.freight], ['Insurance', ins], ['CIF value', cif, 1], ['Import duty', duty], ['VAT / sales tax', vat], ['Clearance & local', v.local], ['Himbridge service fee', fee], ['Total landed cost', total, 1]];
+  qs('#res').innerHTML = rows.map(([l, n, b]) => `<tr><td>${b ? `<b>${l}</b>` : l}</td><td class="right">${b ? `<b>${usd(n)}</b>` : usd(n)}</td></tr>`).join('')
+    + `<tr><td><b style="color:var(--green)">Landed cost per unit</b></td><td class="right"><b style="color:var(--green);font-size:1.1rem">${usd(v.qty ? total / v.qty : 0)}</b></td></tr>`;
+}
+f.oninput = calc; calc();
+
+const HS = [
+  ['8306.29', 'Statuettes & other ornaments of base metal (brass décor)', 'Handicrafts'],
+  ['4420.90', 'Wooden ornaments, caskets, inlaid wood articles', 'Handicrafts'],
+  ['6802.91', 'Worked marble articles', 'Handicrafts'],
+  ['6913.90', 'Ceramic ornamental articles (blue pottery)', 'Handicrafts'],
+  ['9403.60', 'Wooden furniture (other)', 'Furniture'],
+  ['9401.61', 'Upholstered seats with wooden frames', 'Furniture'],
+  ['9401.31', 'Swivel seats, wooden frame / office chairs', 'Furniture'],
+  ['5701.10', 'Hand-knotted carpets of wool', 'Rugs'],
+  ['5702.39', 'Flat-woven carpets of other vegetable fibres (jute)', 'Rugs'],
+  ['6302.21', 'Printed bed linen of cotton', 'Home textiles'],
+  ['6304.92', 'Furnishing articles of cotton (cushion covers)', 'Home textiles'],
+  ['6301.40', 'Blankets & throws of synthetic fibres', 'Home textiles'],
+  ['1211.90', 'Plants & parts used in pharmacy (herbs)', 'Wellness'],
+  ['3304.99', 'Beauty / skin-care preparations', 'Wellness'],
+  ['7117.19', 'Imitation jewellery of base metal', 'Jewellery'],
+  ['4202.21', 'Handbags with outer surface of leather', 'Leather'],
+  ['0904.21', 'Dried chillies, not crushed', 'Spices'],
+  ['9405.11', 'LED luminaires designed for fixed installation', 'LED & solar'],
+  ['9405.42', 'LED lamps & lighting fittings (incl. solar street lights)', 'LED & solar'],
+  ['8541.43', 'Photovoltaic cells assembled in modules', 'LED & solar'],
+  ['8504.40', 'Static converters (chargers, adapters)', 'Electronics'],
+  ['8518.30', 'Headphones & earphones', 'Electronics'],
+  ['8516.60', 'Ovens, cookers, air fryers', 'Home & kitchen'],
+  ['7323.93', 'Stainless steel table & kitchenware', 'Home & kitchen'],
+  ['4819.10', 'Cartons & boxes of corrugated paper', 'Packaging'],
+  ['8205.59', 'Hand tools (other)', 'Hardware'],
+  ['9503.00', 'Toys', 'Toys & festive'],
+  ['9505.10', 'Christmas & festive articles', 'Toys & festive'],
+];
+const hsq = qs('#hsq');
+const renderHS = () => {
+  const q = hsq.value.toLowerCase();
+  qs('#hsrows').innerHTML = HS.filter((r) => r.join(' ').toLowerCase().includes(q)).map((r) => `<tr><td><b>${r[0]}</b></td><td>${esc(r[1])}</td><td class="small muted">${r[2]}</td></tr>`).join('') || '<tr><td colspan="3" class="muted">No match — ask the help desk for classification.</td></tr>';
+};
+hsq.oninput = renderHS; renderHS();
+qs('.tbl', qs('#hs')).insertAdjacentHTML('afterend', '<p class="tiny muted" style="padding:8px 14px;margin:0">6-digit HS codes are international; 8–10 digit national tariff lines differ by country.</p>');
+
+const DOCS = {
+  IN: ['Importer Exporter Code (IEC) from DGFT', 'GST registration & LUT for zero-rated exports', 'RCMC from relevant Export Promotion Council (EPCH, CEPC…)', 'Commercial invoice & packing list', 'Shipping bill (ICEGATE)', 'Certificate of Origin (preferential for FTA markets)', 'Bill of lading / airway bill', 'Pre-shipment inspection report (AQL)', 'Fumigation & ISPM-15 certificate for wooden goods/packaging', 'Product-specific: FSC, FSSAI, AYUSH, GoodWeave, OEKO-TEX as applicable'],
+  CN: ['Business licence with import/export rights', 'Customs registration (China Customs)', 'Commercial invoice & packing list', 'Export customs declaration', 'Certificate of Origin (CCPIT / Form E etc.)', 'Bill of lading / airway bill', 'Pre-shipment inspection report (AQL)', 'CE / RoHS / FCC / UL test reports as per destination', 'MSDS & UN38.3 for lithium batteries', 'Fumigation certificate for wooden packaging'],
+};
+const lane = qs('#lane');
+const renderDocs = () => { qs('#doclist').innerHTML = DOCS[lane.value].map((d) => `<li>☐ ${esc(d)}</li>`).join(''); };
+lane.onchange = renderDocs; renderDocs();
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vendor Directory — Himbridge Global Trade Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Serif:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/portal.css">
+<link rel="icon" href="/assets/favicon.svg">
+<script>try{if((localStorage.getItem("hbg-lang")||"en")!=="en"){document.documentElement.style.visibility="hidden";setTimeout(function(){document.documentElement.style.visibility=""},2500)}}catch(e){}</script>
+</head>
+<body>
+<div id="site-header"></div>
+<main id="main">
+<div id="banner"></div>
+<div class="pagebar"><div class="wrap">
+  <div class="crumbs"><a href="/">Home</a> › Vendor Directory</div>
+  <h1>Verified Vendor Directory</h1>
+  <p>Every listed manufacturer has passed Himbridge's KYC and document verification. Factory audits are shown under certifications.</p>
+</div></div>
+<div class="wrap section">
+  <div class="banner info">Are you a manufacturer, artisan workshop or exporter? <a href="/register?role=vendor"><b>Apply for verification →</b></a> First 100 vendors get free Gold tier under the Founding Vendor Programme.</div>
+  <div class="grid g2" id="list"></div>
+</div>
+</main>
+<div id="site-footer"></div>
+<script type="module">
+import { api, esc, originChip, nicheMap, qs, ph, pageBanner } from '/assets/app.js';
+qs('#banner').innerHTML = pageBanner('Vendors', { img: '/assets/img/banner-vendors.jpg', kicker: 'Verified vendors', line: 'Every maker visited, verified and on record.', pos: '60% 45%' });
+const niches = await nicheMap();
+const vs = await api('/api/vendors');
+qs('#list').innerHTML = vs.map((v) => `<div class="block">
+  <div class="block-body" style="display:flex;gap:14px">
+    ${ph('Logo', '', 'logo-ph')}
+    <div style="flex:1;min-width:0">
+      <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><h3 style="margin:0">${esc(v.company)}</h3><span class="badge ok">✔ Verified</span></div>
+      <div class="small muted" style="margin:4px 0 8px">${originChip(v.origin)} &nbsp;${esc(v.cluster)} · ${esc(niches[v.niche]?.name || v.niche)}</div>
+      <p class="small">${esc(v.about || '')}</p>
+      <div class="kv"><span>Capacity <b>${esc(v.capacity || '—')}</b></span><span>Experience <b>${v.years || '—'} yrs</b></span><span>Products <b>${v.product_count}</b></span></div>
+      <div class="kv" style="margin-top:6px"><span>Certifications <b>${esc(v.certifications || '—')}</b></span></div>
+      <div style="margin-top:10px;display:flex;gap:8px"><a class="btn sm ghost" href="/marketplace?q=${encodeURIComponent(v.company)}">View products</a><a class="btn sm" href="/dashboard#post-rfq?niche=${v.niche}">Request quote</a></div>
+    </div></div></div>`).join('') || '<div class="empty">No verified vendors yet.</div>';
+</script>
+</body>
+</html>

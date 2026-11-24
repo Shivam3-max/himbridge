@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Register — Himbridge Global Trade Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Serif:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/portal.css">
+<link rel="icon" href="/assets/favicon.svg">
+<script>try{if((localStorage.getItem("hbg-lang")||"en")!=="en"){document.documentElement.style.visibility="hidden";setTimeout(function(){document.documentElement.style.visibility=""},2500)}}catch(e){}</script>
+</head>
+<body>
+<div id="site-header"></div>
+<main id="main">
+<div class="pagebar"><div class="wrap">
+  <div class="crumbs"><a href="/">Home</a> › Registration</div>
+  <h1>New Registration</h1>
+  <p>Choose your account type. Manufacturers go through KYC verification before they can quote.</p>
+</div></div>
+<div class="wrap section" style="max-width:900px">
+  <form class="block" id="f" novalidate>
+    <div class="block-head saffron"><h3>Registration form</h3><span class="tiny muted">Fields marked <span style="color:var(--bad)">*</span> are mandatory</span></div>
+    <div class="block-body">
+      <div class="form-msg" id="msg"></div>
+      <div class="role-pick">
+        <label><input type="radio" name="role" value="buyer" checked><b>Buyer / Importer</b><span>Source products and post RFQs</span></label>
+        <label><input type="radio" name="role" value="vendor"><b>Manufacturer / Vendor</b><span>Factory, workshop or exporter</span></label>
+        <label><input type="radio" name="role" value="logistics"><b>Logistics Partner</b><span>Freight forwarder, CHA, inspection</span></label>
+      </div>
+
+      <h3 style="margin-top:6px">1. Contact &amp; company</h3>
+      <div class="grid-form">
+        <div class="field"><label>Full name <span class="req">*</span></label><input name="name" required></div>
+        <div class="field"><label>Company name <span class="req">*</span></label><input name="company" required></div>
+        <div class="field"><label>Business email <span class="req">*</span></label><input name="email" type="email" autocomplete="username" required></div>
+        <div class="field"><label>Phone / WhatsApp</label><input name="phone"></div>
+        <div class="field"><label>Country <span class="req">*</span></label><input name="country" list="countries" required></div>
+        <div class="field"><label>Password <span class="req">*</span> <span class="tiny muted">(min 8 characters)</span></label><input name="password" type="password" autocomplete="new-password" required minlength="8"></div>
+      </div>
+
+      <div id="vendor-fields" hidden>
+        <h3>2. Manufacturing profile</h3>
+        <div class="grid-form">
+          <div class="field"><label>Factory country <span class="req">*</span></label><select name="origin"><option value="">Select</option><option value="IN">India</option><option value="CN">China</option></select></div>
+          <div class="field"><label>Primary category <span class="req">*</span></label><select name="niche"><option value="">Select</option></select></div>
+          <div class="field"><label>City / cluster</label><input name="cluster" placeholder="e.g. city / industrial cluster"></div>
+          <div class="field"><label>Years in business</label><input name="years" type="number" min="0"></div>
+          <div class="field"><label>Monthly capacity</label><input name="capacity" placeholder="e.g. 10 containers / month"></div>
+          <div class="field"><label>Certifications</label><input name="certifications" placeholder="IEC, GST, ISO 9001, BSCI, FSC, CE…"></div>
+          <div class="field full"><label>About your company</label><textarea name="about"></textarea></div>
+          <div class="field full"><label>KYC documents</label>
+            <div id="kyc-drop"></div><span class="tiny muted">Export registration, tax registration, business licence, certificates. You can also add these later from your dashboard.</span></div>
+        </div>
+      </div>
+
+      <label style="font-weight:400;display:flex;gap:8px;align-items:flex-start;margin:6px 0 16px" class="small"><input type="checkbox" name="agree" style="width:auto;margin-top:3px"> I confirm the details are correct and agree to the Himbridge Terms of Use and Privacy Policy.</label>
+      <button class="btn saffron">Submit registration</button>
+      <span class="small muted" style="margin-left:10px">Already registered? <a href="/login">Login</a></span>
+    </div>
+  </form>
+</div>
+<datalist id="countries"><option>India</option><option>China</option><option>United States</option><option>United Arab Emirates</option><option>United Kingdom</option><option>Germany</option><option>Netherlands</option><option>Australia</option><option>Canada</option><option>Saudi Arabia</option><option>South Africa</option><option>Nigeria</option><option>Kenya</option><option>France</option><option>Singapore</option></datalist>
+</main>
+<div id="site-footer"></div>
+<script type="module">
+import { api, esc, getMeta, formData, showMsg, qs, dropzone, bindDropzones, uploadAll } from '/assets/app.js';
+const { niches } = await getMeta();
+const f = qs('#f');
+qs('#kyc-drop').innerHTML = dropzone('kyc'); bindDropzones(qs('#kyc-drop'));
+const roleQ = new URLSearchParams(location.search).get('role');
+if (['buyer', 'vendor', 'logistics'].includes(roleQ)) f.querySelector(`[name=role][value=${roleQ}]`).checked = true;
+function fillNiches() {
+  const o = f.origin.value;
+  f.niche.innerHTML = '<option value="">Select</option>' + niches.filter((n) => !o || n.origin === o).map((n) => `<option value="${n.slug}">${esc(n.name)}</option>`).join('');
+}
+const sync = () => { qs('#vendor-fields').hidden = f.querySelector('[name=role]:checked').value !== 'vendor'; };
+f.querySelectorAll('[name=role]').forEach((r) => (r.onchange = sync));
+f.origin.onchange = () => { fillNiches(); if (!f.country.value) f.country.value = f.origin.value === 'IN' ? 'India' : f.origin.value === 'CN' ? 'China' : ''; };
+fillNiches(); sync();
+f.onsubmit = async (e) => {
+  e.preventDefault();
+  const d = formData(f);
+  if (!d.agree) return showMsg(qs('#msg'), 'Please accept the Terms of Use to continue.');
+  try {
+    await api('/api/register', { body: d });
+    const kyc = d.role === 'vendor' ? [...f.kyc.files] : [];
+    if (kyc.length) await uploadAll(kyc, { kind: 'kyc', label: 'KYC document' }).catch(() => {});
+    location.href = '/dashboard?welcome=1';
+  } catch (err) { showMsg(qs('#msg'), err.message); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+};
+</script>
+</body>
+</html>
