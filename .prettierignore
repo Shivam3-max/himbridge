@@ -1,0 +1,8 @@
+.next
+node_modules
+drizzle
+.pgdata
+data
+src/i18n/messages
+public
+package-lock.json

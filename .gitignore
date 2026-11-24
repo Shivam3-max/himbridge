@@ -1,3 +1,24 @@
-data/
+# dependencies
 node_modules/
+
+# next.js
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# local data (database, uploads, embedded postgres)
+data/
+.pgdata/
+uploads/
+
+# env files — commit only .env.example
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# logs & OS
+npm-debug.log*
 .DS_Store
+coverage/
