@@ -11,6 +11,7 @@ import { db } from '@/server/db/client';
 import { user, vendorProfile } from '@/server/db/schema';
 import { AppError } from '@/server/errors';
 import { uploadFiles } from '@/server/services/files';
+import { ORIGIN_COUNTRY } from '@/domain/sectors';
 
 /**
  * Creates an account. Sign-up is only possible through this action (the raw HTTP endpoint is disabled),
@@ -29,7 +30,7 @@ export async function register(_prev: ActionResult | null, formData: FormData): 
         password: input.password,
         role: input.role,
         company: input.company,
-        country: input.country,
+        country: input.role === 'vendor' ? ORIGIN_COUNTRY : input.country,
         phone: input.phone,
         callbackURL: '/verify-email',
       },
@@ -41,7 +42,6 @@ export async function register(_prev: ActionResult | null, formData: FormData): 
       try {
         await db.insert(vendorProfile).values({
           userId,
-          origin: input.origin as 'IN' | 'CN',
           niche: input.niche!,
           cluster: input.cluster,
           certifications: input.certifications,
@@ -63,7 +63,7 @@ export async function register(_prev: ActionResult | null, formData: FormData): 
           email: input.email,
           emailVerified: false,
           company: input.company,
-          country: input.country,
+          country: input.role === 'vendor' ? ORIGIN_COUNTRY : input.country,
           phone: input.phone,
           vendor: null,
         };

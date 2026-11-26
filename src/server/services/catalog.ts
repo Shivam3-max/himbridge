@@ -1,6 +1,6 @@
 import 'server-only';
-import { and, asc, count, countDistinct, desc, eq, ilike, or, sql, sum } from 'drizzle-orm';
-import type { Origin } from '@/domain/collections';
+import { and, asc, count, countDistinct, desc, eq, ilike, inArray, or, sql, sum } from 'drizzle-orm';
+import { nichesInSector, type SectorKey } from '@/domain/sectors';
 import { NICHES } from '@/domain/niches';
 import type { CurrentUser } from '../auth/session';
 import { db } from '../db/client';
@@ -34,10 +34,10 @@ const productColumns = {
 export type ProductListItem = Awaited<ReturnType<typeof listProducts>>[number];
 
 /** Public marketplace: active products of verified vendors. */
-export async function listProducts(filters: { q?: string; niche?: string; origin?: Origin; limit?: number } = {}) {
+export async function listProducts(filters: { q?: string; niche?: string; sector?: SectorKey; limit?: number } = {}) {
   const where = [eq(product.status, 'active'), eq(vendorProfile.verification, 'verified')];
   if (filters.niche) where.push(eq(product.niche, filters.niche));
-  if (filters.origin) where.push(eq(vendorProfile.origin, filters.origin));
+  if (filters.sector) where.push(inArray(product.niche, nichesInSector(filters.sector)));
   const q = filters.q?.trim();
   if (q) {
     const like = `%${q.replace(/[%_\\]/g, (c) => `\\${c}`)}%`;
@@ -47,7 +47,6 @@ export async function listProducts(filters: { q?: string; niche?: string; origin
     .select({
       ...productColumns,
       vendorCompany: user.company,
-      origin: vendorProfile.origin,
       cluster: vendorProfile.cluster,
       certifications: vendorProfile.certifications,
     })
@@ -66,7 +65,6 @@ export async function listVerifiedVendors() {
       id: user.id,
       company: user.company,
       country: user.country,
-      origin: vendorProfile.origin,
       cluster: vendorProfile.cluster,
       niche: vendorProfile.niche,
       certifications: vendorProfile.certifications,
@@ -114,8 +112,6 @@ export async function getStats() {
   const [vendors] = await db
     .select({
       total: count(),
-      crafted: sql<number>`count(*) filter (where ${vendorProfile.origin} = 'IN')::int`,
-      engineered: sql<number>`count(*) filter (where ${vendorProfile.origin} = 'CN')::int`,
       clusters: countDistinct(sql`nullif(${vendorProfile.cluster}, '')`),
     })
     .from(vendorProfile)
@@ -130,8 +126,6 @@ export async function getStats() {
   const [orders] = await db.select({ n: count(), value: sum(order.total).mapWith(Number) }).from(order);
   return {
     vendors: vendors?.total ?? 0,
-    vendorsCrafted: vendors?.crafted ?? 0,
-    vendorsEngineered: vendors?.engineered ?? 0,
     clusters: vendors?.clusters ?? 0,
     products: products?.n ?? 0,
     buyers: buyers?.n ?? 0,

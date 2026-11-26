@@ -932,15 +932,25 @@ textarea {
   color: var(--ink);
   white-space: nowrap;
 }
-.chip.crafted {
+.chip.home {
   color: #9a5800;
   border-color: #f6d3a2;
   background: #fff7ec;
 }
-.chip.engineered {
-  color: #1d4f91;
-  border-color: #c4d5ee;
-  background: #f1f6fd;
+.chip.food {
+  color: #9a3412;
+  border-color: #f5c9b3;
+  background: #fff4ee;
+}
+.chip.fashion {
+  color: #9f1239;
+  border-color: #f3c1cf;
+  background: #fff1f5;
+}
+.chip.wellness {
+  color: #166534;
+  border-color: #bfe3c9;
+  background: #effaf2;
 }
 .chip.any {
   color: var(--navy);

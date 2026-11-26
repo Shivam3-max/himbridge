@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { register } from '@/actions/auth';
 import { Dropzone, SubmitButton, useFormAction } from '@/components/ui/forms';
 import { FormMessage } from '@/components/ui/primitives';
-import { NICHES } from '@/domain/niches';
+import { NicheOptions } from '@/components/dashboard/trade-forms';
 import type { SelfServiceRole } from '@/domain/roles';
 import { useT } from '@/i18n/client';
 
@@ -17,7 +17,6 @@ const ROLES: [SelfServiceRole, string, string][] = [
 ];
 const COUNTRIES = [
   'India',
-  'China',
   'United States',
   'United Arab Emirates',
   'United Kingdom',
@@ -37,7 +36,6 @@ export function RegisterForm({ initialRole }: { initialRole: SelfServiceRole }) 
   const t = useT();
   const router = useRouter();
   const [role, setRole] = useState<SelfServiceRole>(initialRole);
-  const [origin, setOrigin] = useState('');
   const [country, setCountry] = useState('');
   const f = useFormAction(register, {
     reset: false,
@@ -64,7 +62,16 @@ export function RegisterForm({ initialRole }: { initialRole: SelfServiceRole }) 
         <div className="role-pick">
           {ROLES.map(([value, label, sub]) => (
             <label key={value}>
-              <input type="radio" name="role" value={value} checked={role === value} onChange={() => setRole(value)} />
+              <input
+                type="radio"
+                name="role"
+                value={value}
+                checked={role === value}
+                onChange={() => {
+                  setRole(value);
+                  if (value === 'vendor' && !country) setCountry('India');
+                }}
+              />
               <b>{t(label)}</b>
               <span>{t(sub)}</span>
             </label>
@@ -113,33 +120,17 @@ export function RegisterForm({ initialRole }: { initialRole: SelfServiceRole }) 
           <h3>{t('2. Manufacturing profile')}</h3>
           <div className="grid-form">
             <div className="field">
-              <label>
-                {t('Factory country')} <span className="req">*</span>
-              </label>
-              <select
-                name="origin"
-                value={origin}
-                onChange={(e) => {
-                  setOrigin(e.target.value);
-                  if (!country) setCountry(e.target.value === 'IN' ? 'India' : e.target.value === 'CN' ? 'China' : '');
-                }}
-              >
-                <option value="">{t('Select')}</option>
-                <option value="IN">{t('India')}</option>
-                <option value="CN">{t('China')}</option>
-              </select>
+              <label>{t('Factory country')}</label>
+              <input value={t('India')} readOnly disabled />
+              <span className="tiny muted">{t('Himbridge onboards Indian manufacturers only.')}</span>
             </div>
             <div className="field">
               <label>
                 {t('Primary category')} <span className="req">*</span>
               </label>
-              <select name="niche" key={origin} defaultValue="">
+              <select name="niche" defaultValue="">
                 <option value="">{t('Select')}</option>
-                {NICHES.filter((n) => !origin || n.origin === origin).map((n) => (
-                  <option key={n.slug} value={n.slug}>
-                    {t(n.name)}
-                  </option>
-                ))}
+                <NicheOptions />
               </select>
             </div>
             <div className="field">

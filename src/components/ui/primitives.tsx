@@ -7,7 +7,7 @@
  */
 import Link from 'next/link';
 import type { CSSProperties, ReactNode } from 'react';
-import { COLLECTIONS, isOrigin } from '@/domain/collections';
+import { SECTORS, sectorOf } from '@/domain/sectors';
 import { ORDER_FLOW, statusIndex, statusLabel } from '@/domain/order-flow';
 import { useT } from '@/i18n/client';
 import { cx, fmtDate } from '@/lib/format';
@@ -126,20 +126,14 @@ export function Placeholder({
   );
 }
 
-export function CollectionChip({ origin }: { origin: string | null | undefined }) {
+/** Colour-coded sector label for a niche (Home & Living, Food & Agri, …). */
+export function SectorChip({ niche }: { niche: string | null | undefined }) {
   const t = useT();
-  if (!isOrigin(origin))
-    return (
-      <span className="chip any">
-        <span className="dot" />
-        {t('Any collection')}
-      </span>
-    );
-  const c = COLLECTIONS[origin];
+  const key = sectorOf(niche);
   return (
-    <span className={cx('chip', c.key)}>
+    <span className={cx('chip', key ?? 'any')}>
       <span className="dot" />
-      {t(c.name)}
+      {t(key ? SECTORS[key].name : 'All sectors')}
     </span>
   );
 }

@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { FileList } from '@/components/dashboard/files';
 import { QuoteForm } from '@/components/dashboard/trade-forms';
 import { Badge, Banner, Empty } from '@/components/ui/primitives';
-import { collectionName } from '@/domain/collections';
+import { sectorName } from '@/domain/sectors';
 import { nicheName } from '@/domain/niches';
 import { getI18n } from '@/i18n/server';
 import { fmtDate, fmtNum, usd } from '@/lib/format';
@@ -22,7 +22,7 @@ export default async function InboxPage() {
         <Banner tone="warn">{t('Quoting unlocks once your company is verified. You can preview matching RFQs below.')}</Banner>
       ) : (
         <Banner tone="info">
-          {t('Showing open RFQs for your collection:')} <b>{t(collectionName(me.vendor.origin))}</b> ·{' '}
+          {t('Showing open RFQs for your sector:')} <b>{t(sectorName(me.vendor.niche))}</b> ·{' '}
           {t('Matches in your category are listed first:')} <b>{t(nicheName(me.vendor.niche))}</b>
         </Banner>
       )}

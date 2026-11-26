@@ -1,5 +1,5 @@
 import 'server-only';
-import { and, asc, desc, eq, inArray, or, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
 import type { z } from 'zod';
 import { orderCode } from '@/domain/order-flow';
 import { orderTotal, splitPayments } from '@/domain/payments';
@@ -9,6 +9,13 @@ import { db } from '../db/client';
 import { milestone, order, payment, quote, rfq, user, vendorProfile } from '../db/schema';
 import { AppError, forbidden, notFound } from '../errors';
 import { listFilesFor } from './files';
+import { nichesInSector, sectorOf } from '@/domain/sectors';
+
+/** Vendors see and quote on RFQs anywhere in their own sector (e.g. a rug maker sees all Home & Living RFQs). */
+const sectorNiches = (vendorNiche: string) => {
+  const s = sectorOf(vendorNiche);
+  return s ? nichesInSector(s) : [vendorNiche];
+};
 
 const rfqColumns = {
   id: rfq.id,
@@ -19,7 +26,6 @@ const rfqColumns = {
   unit: rfq.unit,
   destination: rfq.destination,
   targetPrice: rfq.targetPrice,
-  originPref: rfq.originPref,
   status: rfq.status,
   createdAt: rfq.createdAt,
   buyerCompany: user.company,
@@ -48,7 +54,7 @@ async function quotesFor(rfqIds: number[]) {
       note: quote.note,
       status: quote.status,
       vendorCompany: user.company,
-      origin: vendorProfile.origin,
+      vendorNiche: vendorProfile.niche,
       certifications: vendorProfile.certifications,
     })
     .from(quote)
@@ -73,14 +79,14 @@ export async function listRfqsWithQuotes(viewer: CurrentUser) {
 }
 export type RfqWithQuotes = Awaited<ReturnType<typeof listRfqsWithQuotes>>[number];
 
-/** Vendor inbox: open RFQs for the vendor's collection, own niche first, with the vendor's own quote if any. */
+/** Vendor inbox: open RFQs in the vendor's sector, own niche first, with the vendor's own quote if any. */
 export async function listRfqInbox(viewer: CurrentUser) {
   const v = requireVendorProfile(viewer);
   const rows = await db
     .select(rfqColumns)
     .from(rfq)
     .innerJoin(user, eq(user.id, rfq.buyerId))
-    .where(and(eq(rfq.status, 'open'), or(eq(rfq.originPref, 'ANY'), eq(rfq.originPref, v.vendor.origin))))
+    .where(and(eq(rfq.status, 'open'), inArray(rfq.niche, sectorNiches(v.vendor.niche))))
     .orderBy(desc(sql`${rfq.niche} = ${v.vendor.niche}`), desc(rfq.id));
   const ids = rows.map((r) => r.id);
   const [mine, files] = await Promise.all([
@@ -101,8 +107,7 @@ export async function submitQuote(viewer: CurrentUser, rfqId: number, input: z.i
   if (v.vendor.verification !== 'verified') throw new AppError('Your vendor profile must be verified before you can quote', 403);
   const target = await db.query.rfq.findFirst({ where: eq(rfq.id, rfqId) });
   if (!target || target.status !== 'open') throw new AppError('This RFQ is not open', 404);
-  if (target.originPref !== 'ANY' && target.originPref !== v.vendor.origin)
-    throw new AppError('This RFQ is limited to a different collection', 403);
+  if (!sectorNiches(v.vendor.niche).includes(target.niche)) throw new AppError('This RFQ is for a different product sector', 403);
   await db
     .insert(quote)
     .values({ rfqId, vendorId: v.id, ...input })

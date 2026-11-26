@@ -12,7 +12,7 @@ import {
   submitQuote,
   uploadFiles,
 } from '@/actions/trade';
-import { collectionName } from '@/domain/collections';
+import { SECTORS, SECTOR_KEYS, sectorOf, type SectorKey } from '@/domain/sectors';
 import { ACCEPT_IMAGES } from '@/domain/files';
 import { NICHES } from '@/domain/niches';
 import { UNITS } from '@/domain/trade-reference';
@@ -23,14 +23,19 @@ import { FormMessage } from '../ui/primitives';
 import { Dropzone, SubmitButton, useCommand, useFormAction } from '../ui/forms';
 import { useToast } from '../ui/toast';
 
-function NicheOptions({ origin }: { origin?: string }) {
+/** Niche options grouped by sector; pass `sector` to limit the list to one sector. */
+export function NicheOptions({ sector }: { sector?: SectorKey }) {
   const t = useT();
   return (
     <>
-      {NICHES.filter((n) => !origin || n.origin === origin).map((n) => (
-        <option key={n.slug} value={n.slug}>
-          {t(n.name)} · {t(collectionName(n.origin))}
-        </option>
+      {SECTOR_KEYS.filter((k) => !sector || k === sector).map((k) => (
+        <optgroup key={k} label={t(SECTORS[k].name)}>
+          {NICHES.filter((n) => n.sector === k).map((n) => (
+            <option key={n.slug} value={n.slug}>
+              {t(n.name)}
+            </option>
+          ))}
+        </optgroup>
       ))}
     </>
   );
@@ -61,14 +66,6 @@ export function PostRfqForm({ defaults }: { defaults: { title?: string; niche?: 
           <select name="niche" defaultValue={defaults.niche ?? ''}>
             <option value="">{t('Select')}</option>
             <NicheOptions />
-          </select>
-        </div>
-        <div className="field">
-          <label>{t('Collection')}</label>
-          <select name="originPref" defaultValue="ANY">
-            <option value="ANY">{t('Any collection (best quote)')}</option>
-            <option value="IN">{t('Crafted only — handmade & natural')}</option>
-            <option value="CN">{t('Engineered only — tech & scale')}</option>
           </select>
         </div>
         <div className="field">
@@ -182,7 +179,7 @@ export function QuoteForm({
   );
 }
 
-export function ProductForm({ vendorNiche, vendorOrigin, open }: { vendorNiche: string; vendorOrigin: string; open: boolean }) {
+export function ProductForm({ vendorNiche, open }: { vendorNiche: string; open: boolean }) {
   const t = useT();
   const router = useRouter();
   const f = useFormAction(createProduct, { onSuccess: () => router.refresh() });
@@ -203,7 +200,7 @@ export function ProductForm({ vendorNiche, vendorOrigin, open }: { vendorNiche: 
               {t('Niche')} <Req />
             </label>
             <select name="niche" defaultValue={vendorNiche}>
-              <NicheOptions origin={vendorOrigin} />
+              <NicheOptions sector={sectorOf(vendorNiche)} />
             </select>
           </div>
           <div className="field">

@@ -18,7 +18,7 @@ const DATA_FILES = [
   'src/domain/order-flow.ts',
   'src/domain/niches.ts',
   'src/domain/roles.ts',
-  'src/domain/collections.ts',
+  'src/domain/sectors.ts',
   'src/domain/files.ts',
   'src/domain/payments.ts',
   'src/domain/trade-reference.ts',

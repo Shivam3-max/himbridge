@@ -2,47 +2,34 @@ import type { Metadata } from 'next';
 import { NicheScorecard } from '@/components/catalog/niche-scorecard';
 import { PageBanner, PageBar } from '@/components/ui/primitives';
 import { NICHES } from '@/domain/niches';
+import { SECTORS, SECTOR_KEYS, type SectorKey } from '@/domain/sectors';
 import { getI18n } from '@/i18n/server';
 
 export const metadata: Metadata = { title: 'Niches & Research' };
 
 export default async function NichesPage() {
   const { t } = await getI18n();
-  const intro: [title: string, tone: string, text: string][] = [
-    [
-      'Crafted collection',
-      'saffron',
-      'Handmade, artisanal and natural-material goods — brass & wood décor, rugs, home textiles, leather, wellness. Small-batch, story-led and customisable; preferential tariffs apply in several key markets.',
-    ],
-    [
-      'Engineered collection',
-      '',
-      'Scale, speed and cost in lighting, solar, appliances, electronics, hardware and modern furniture. Deep component supply chains, certified factories and fast sampling.',
-    ],
-    [
-      'Hybrid sourcing',
-      'green',
-      'Engineered components combined with Crafted finishing and assembly — e.g. furniture hardware with solid-wood bodies — to balance cost, quality and rules of origin. Always verify origin rules per market.',
-    ],
-  ];
+  const tones: Record<SectorKey, string> = { home: 'saffron', food: 'red', fashion: '', wellness: 'green' };
   return (
     <>
-      <PageBanner img="/images/banner-categories.jpg" kicker="Categories & research" line="Sixteen categories. One standard." />
+      <PageBanner img="/images/banner-categories.jpg" kicker="Categories & research" line="Made in India. Sold worldwide." />
       <PageBar
         crumbs={[[null, 'Niches & Research']]}
         title="Niche Opportunity Research"
         lead={t(
-          `${NICHES.length} export categories scored on global demand, margin, ease of entry and manufacturing edge. Phase 1 niches launch first.`,
+          `${NICHES.length} Indian export categories scored on global demand, margin, ease of entry and India's manufacturing edge. Phase 1 niches launch first.`,
         )}
       />
       <div className="wrap section">
-        <div className="grid g3" style={{ marginBottom: 20 }}>
-          {intro.map(([title, tone, text]) => (
-            <div key={title} className="block">
-              <div className={`block-head ${tone}`}>
-                <h3>{t(title)}</h3>
+        <div className="grid g4" style={{ marginBottom: 20 }}>
+          {SECTOR_KEYS.map((k) => (
+            <div key={k} className="block">
+              <div className={`block-head ${tones[k]}`}>
+                <h3>{t(SECTORS[k].name)}</h3>
               </div>
-              <div className="block-body small">{t(text)}</div>
+              <div className="block-body small">
+                {t(SECTORS[k].blurb)} · {t(`${NICHES.filter((n) => n.sector === k).length} categories`)}
+              </div>
             </div>
           ))}
         </div>

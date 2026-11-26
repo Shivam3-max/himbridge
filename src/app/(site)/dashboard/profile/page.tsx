@@ -2,7 +2,7 @@ import { FileList, UploadForm } from '@/components/dashboard/files';
 import { ChangePasswordForm } from '@/components/dashboard/trade-forms';
 import { VerifyEmailBanner } from '@/components/dashboard/verify-banner';
 import { Banner, Block, Placeholder } from '@/components/ui/primitives';
-import { collectionName, countryOfOrigin } from '@/domain/collections';
+import { ORIGIN_COUNTRY, sectorName } from '@/domain/sectors';
 import { KYC_DOC_LABELS } from '@/domain/files';
 import { nicheName } from '@/domain/niches';
 import { ROLE_LABEL } from '@/domain/roles';
@@ -26,8 +26,8 @@ export default async function ProfilePage() {
     ['Account type', t(ROLE_LABEL[me.role])],
     ...(v
       ? ([
-          ['Factory country', t(countryOfOrigin(v.origin) ?? '—')],
-          ['Collection', t(collectionName(v.origin))],
+          ['Factory country', t(ORIGIN_COUNTRY)],
+          ['Sector', t(sectorName(v.niche))],
           ['Cluster', v.cluster || '—'],
           ['Primary category', t(nicheName(v.niche))],
           ['Certifications', v.certifications || '—'],

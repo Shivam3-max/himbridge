@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useRef, useTransition } from 'react';
 import { NICHES } from '@/domain/niches';
+import { SECTORS, SECTOR_KEYS } from '@/domain/sectors';
 import { useT } from '@/i18n/client';
 import { Block } from '../ui/primitives';
 
@@ -41,21 +42,14 @@ export function MarketplaceFilters({ q, niche, c }: { q: string; niche: string; 
         >
           <div className="field">
             <label htmlFor="q">{t('Keyword')}</label>
-            <input id="q" name="q" defaultValue={q} placeholder={t('e.g. rug, planter, LED')} />
+            <input id="q" name="q" defaultValue={q} placeholder={t('e.g. rug, turmeric, brass')} />
           </div>
           <div className="field">
-            <label>{t('Collection')}</label>
+            <label>{t('Sector')}</label>
             <div className="small" style={{ display: 'grid', gap: 6 }}>
-              {(
-                [
-                  ['', 'All collections', ''],
-                  ['crafted', 'Crafted', '— handmade & natural'],
-                  ['engineered', 'Engineered', '— tech & scale'],
-                ] as const
-              ).map(([value, label, hint]) => (
+              {[['', 'All sectors'] as const, ...SECTOR_KEYS.map((k) => [k, SECTORS[k].name] as const)].map(([value, label]) => (
                 <label key={value} className="radio-row">
-                  <input type="radio" name="c" value={value} defaultChecked={c === value} onChange={() => apply()} /> {t(label)}{' '}
-                  {hint && <span className="tiny muted">{t(hint)}</span>}
+                  <input type="radio" name="c" value={value} defaultChecked={c === value} onChange={() => apply()} /> {t(label)}
                 </label>
               ))}
             </div>

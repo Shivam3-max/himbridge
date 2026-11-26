@@ -101,7 +101,6 @@ export const vendorProfile = pgTable(
     userId: text('user_id')
       .primaryKey()
       .references(() => user.id, { onDelete: 'cascade' }),
-    origin: text('origin', { enum: ['IN', 'CN'] }).notNull(),
     cluster: text('cluster').notNull().default(''),
     niche: text('niche').notNull(),
     certifications: text('certifications').notNull().default(''),
@@ -161,9 +160,6 @@ export const rfq = pgTable(
     unit: text('unit').notNull().default('pcs'),
     destination: text('destination').notNull(),
     targetPrice: money('target_price'),
-    originPref: text('origin_pref', { enum: ['IN', 'CN', 'ANY'] })
-      .notNull()
-      .default('ANY'),
     status: text('status', { enum: ['open', 'awarded', 'closed'] })
       .notNull()
       .default('open'),

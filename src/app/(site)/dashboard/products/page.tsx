@@ -15,7 +15,7 @@ export default async function ProductsPage() {
   const [{ t }, products] = await Promise.all([getI18n(), listMyProducts(me)]);
   return (
     <Block title={t(`My products (${products.length})`)} tone="saffron">
-      <ProductForm vendorNiche={me.vendor.niche} vendorOrigin={me.vendor.origin} open={!products.length} />
+      <ProductForm vendorNiche={me.vendor.niche} open={!products.length} />
       {products.length > 0 && (
         <div className="table-wrap" style={{ marginTop: 16 }}>
           <table className="tbl">

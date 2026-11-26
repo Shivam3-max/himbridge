@@ -26,7 +26,6 @@ export const registerSchema = z
     phone: text(40),
     password,
     agree: z.literal('on', { message: 'Please accept the Terms of Use to continue.' }),
-    origin: z.string().optional(),
     niche: z.string().optional(),
     cluster: text(120),
     certifications: text(300),
@@ -36,7 +35,6 @@ export const registerSchema = z
   })
   .superRefine((v, ctx) => {
     if (v.role !== 'vendor') return;
-    if (v.origin !== 'IN' && v.origin !== 'CN') ctx.addIssue({ code: 'custom', path: ['origin'], message: 'Choose your factory country' });
     if (!v.niche || !(NICHE_SLUGS as string[]).includes(v.niche))
       ctx.addIssue({ code: 'custom', path: ['niche'], message: 'Choose your primary niche' });
   });
@@ -73,7 +71,6 @@ export const rfqSchema = z.object({
     .default('pcs')
     .transform((u) => u || 'pcs'),
   targetPrice: optionalPositiveNum('Target price must be positive'),
-  originPref: z.enum(['IN', 'CN', 'ANY']).catch('ANY'),
   details: text(2000),
 });
 

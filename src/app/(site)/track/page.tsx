@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BRAND } from '@/config/brand';
-import { CollectionChip, PageBanner, PageBar, StatusBadge, Timeline } from '@/components/ui/primitives';
+import { SectorChip, PageBanner, PageBar, StatusBadge, Timeline } from '@/components/ui/primitives';
 import { getI18n } from '@/i18n/server';
 import { fmtDate } from '@/lib/format';
 import { trackOrder } from '@/server/services/orders';
@@ -55,7 +55,7 @@ export default async function TrackPage({ searchParams }: { searchParams: Search
                   </p>
                   <div className="kv" style={{ marginBottom: 14 }}>
                     <span>
-                      {t('Collection')} <CollectionChip origin={result.vendorOrigin} />
+                      {t('Sector')} <SectorChip niche={result.vendorNiche} />
                     </span>
                     <span>
                       {t('Destination')} <b>{result.destination}</b>

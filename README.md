@@ -38,8 +38,8 @@ npm run dev                   #             http://localhost:3000
 Already have PostgreSQL (or Docker)? Skip `db:local` and point `DATABASE_URL` in `.env` at your database.
 
 **Demo logins** (password `Himbridge@123`, demo data only; never seed production):
-admin@himbridge.trade · buyer@himbridge.trade · omar@gulfliving.ae · vendor.in@himbridge.trade (Crafted) ·
-vendor.cn@himbridge.trade (Engineered) · kerala@himbridge.trade (pending vendor) · logistics@himbridge.trade
+admin@himbridge.trade · buyer@himbridge.trade · omar@gulfliving.ae · vendor.in@himbridge.trade (handicrafts) ·
+spices@himbridge.trade (spices) · karnal@himbridge.trade (basmati) · kerala@himbridge.trade (pending vendor) · logistics@himbridge.trade
 
 ## Scripts
 
@@ -57,7 +57,7 @@ vendor.cn@himbridge.trade (Engineered) · kerala@himbridge.trade (pending vendor
 
 ## What the portal does
 
-- **Public site:** home with live trade-network map, marketplace (Crafted / Engineered collections), category research,
+- **Public site:** home with live trade-network map, marketplace (four sectors of Indian-made products), category research,
   verified vendor directory, shipment tracking, trade tools (landed cost, HS codes, Incoterms, export checklist), about.
 - **Accounts:** buyers, vendors (with KYC upload and verification) and logistics partners; email verification;
   forgot / reset / change password. Admins are created by the team, never by sign-up.

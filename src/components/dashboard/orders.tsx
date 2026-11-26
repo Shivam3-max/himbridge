@@ -9,7 +9,7 @@ import type { Role } from '@/domain/roles';
 import { useT } from '@/i18n/client';
 import { fmtDate, fmtNum, usd } from '@/lib/format';
 import type { OrderDetail } from '@/server/services/orders';
-import { Badge, CollectionChip, Empty, ProgressBar, StatusBadge, Timeline } from '../ui/primitives';
+import { Badge, SectorChip, Empty, ProgressBar, StatusBadge, Timeline } from '../ui/primitives';
 import { SubmitButton, useCommand, useFormAction } from '../ui/forms';
 import { FileList, UploadForm } from './files';
 
@@ -79,7 +79,7 @@ export function OrderCard({ order: o, viewer, partners = [] }: { order: OrderDet
             {t('Buyer')} <b>{o.buyerCompany}</b>
           </span>
           <span>
-            {t('Vendor')} <b>{o.vendorCompany}</b> <CollectionChip origin={o.vendorOrigin} />
+            {t('Vendor')} <b>{o.vendorCompany}</b> <SectorChip niche={o.vendorNiche} />
           </span>
           <span>
             {t('Qty')}{' '}

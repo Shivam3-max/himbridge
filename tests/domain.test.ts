@@ -3,6 +3,8 @@ import { detectType, safeFileName } from '@/domain/files';
 import { landedCost } from '@/domain/landed-cost';
 import { checkTransition, hasReached, nextStatus, orderCode } from '@/domain/order-flow';
 import { splitPayments } from '@/domain/payments';
+import { NICHES } from '@/domain/niches';
+import { SECTOR_KEYS, nichesInSector, sectorName, sectorOf } from '@/domain/sectors';
 
 const base = { hasLogistics: true, advancePaid: true, balancePaid: true } as const;
 
@@ -92,5 +94,19 @@ describe('uploads', () => {
   it('sanitises file names', () => {
     expect(safeFileName('../../etc/passwd', 'file')).toBe('.._.._etc_passwd');
     expect(safeFileName('   ', 'file.pdf')).toBe('file.pdf');
+  });
+});
+
+describe('sectors', () => {
+  it('assigns every niche to exactly one known sector', () => {
+    for (const n of NICHES) expect(SECTOR_KEYS).toContain(n.sector);
+    const all = SECTOR_KEYS.flatMap((k) => nichesInSector(k));
+    expect(all.sort()).toEqual(NICHES.map((n) => n.slug).sort());
+  });
+
+  it('resolves a niche to its sector name', () => {
+    expect(sectorOf('spices')).toBe('food');
+    expect(sectorName('rugs')).toBe('Home & Living');
+    expect(sectorName('unknown')).toBe('All sectors');
   });
 });

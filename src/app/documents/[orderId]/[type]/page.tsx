@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { LogoMark } from '@/components/brand/logo';
 import { BRAND } from '@/config/brand';
-import { countryOfOrigin } from '@/domain/collections';
+import { ORIGIN_COUNTRY } from '@/domain/sectors';
 import { getI18n } from '@/i18n/server';
 import { fmtDate, fmtNum, usd } from '@/lib/format';
 import { requirePageUser } from '@/server/auth/session';
@@ -45,7 +45,7 @@ export default async function TradeDocumentPage({ params }: { params: Params }) 
 
   const o = doc.order;
   const no = `${PREFIX[type]}-${o.code}`;
-  const origin = countryOfOrigin(doc.vendorOrigin) ?? doc.vendorCountry ?? '—';
+  const origin = ORIGIN_COUNTRY;
   const adv = doc.payments.find((p) => p.stage === 'advance');
   const bal = doc.payments.find((p) => p.stage === 'balance');
   const advPct = adv?.pct ?? 30;

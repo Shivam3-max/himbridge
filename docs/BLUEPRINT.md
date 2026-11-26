@@ -2,23 +2,23 @@
 
 > Brand: **Himbridge Global**. _Him_ = the Himalaya (strength, high standards); _bridge_ = the trusted link between great makers and buyers worldwide. Public tagline: _Verified manufacturers · Delivered worldwide._
 >
-> **Positioning rule (internal):** the public site never sells "India + China". Buyers see the Himbridge brand and two collections — **Crafted** (handmade, artisanal, natural materials) and **Engineered** (lighting, solar, appliances, electronics, modern furniture at scale). Country of origin stays in the data and appears only where the law needs it (commercial invoice, packing list, certificate of origin). This document is internal and may name the sourcing countries.
+> **Positioning rule:** Himbridge onboards **Indian manufacturers only** and sells their products worldwide. "Made in India" is a selling point, not something to hide. Products are grouped into four sectors — **Home & Living**, **Food & Agri**, **Fashion & Textiles** and **Wellness & Natural** (`src/domain/sectors.ts`).
 > Rename freely; the brand lives in one place (`public/assets/app.js` → `BRAND`) and the page headers.
 
 ---
 
 ## 1. The idea in one paragraph
 
-Himbridge is a **360° cross-border trade ecosystem**. We onboard verified manufacturers in **India and China** across chosen niches, give international buyers a single, trusted portal to discover products, raise RFQs, compare quotes, place orders, and track goods door-to-door. Himbridge sits in the middle as the **trust + operations layer**: vendor verification, quality inspection, export documentation, freight booking, and payment milestones. Revenue comes from commissions, vendor subscriptions, and value-added services (QC, logistics, finance, private label).
+Himbridge is a **360° cross-border trade ecosystem for Indian manufacturers**. We onboard verified makers — artisan clusters, MSMEs and established exporters — across India's evergreen export niches, and give international buyers a single, trusted portal to discover products, raise RFQs, compare quotes, place orders, and track goods door-to-door. Himbridge sits in the middle as the **trust + operations layer**: vendor verification, export-readiness support for first-time exporters, quality inspection, export documentation, freight booking, and payment milestones. Revenue comes from commissions, vendor subscriptions, and value-added services (export readiness, QC, logistics, finance, private label).
 
-**Why India + China together ("dual sourcing"):**
+**Why India only:**
 
-| Lever                | India                                                                                                                                                       | China                                                     |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| Strength             | Handmade, artisanal, natural materials, textiles, wellness, labour-intensive goods                                                                          | Scale, electronics, hardware, components, speed, cost     |
-| Trade-agreement edge | FTAs/CEPAs with UAE, Australia, UK, EFTA; preferential access in several markets                                                                            | Deep supply chains, low unit cost, fast samples           |
-| Risk hedge           | "China + 1" demand from US/EU buyers diversifying away from single-country sourcing                                                                         | Fallback capacity when India lead times or MOQs don't fit |
-| Hybrid play          | **China components → India finishing/assembly** (e.g. furniture hardware + Indian wood, LED drivers + Indian assembly) to optimise cost and rules-of-origin |                                                           |
+| Lever                | Why it matters                                                                                                    |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Strength             | Handmade, artisanal and natural-material goods, textiles, spices, rice, tea, wellness — categories India leads in |
+| Trade-agreement edge | India–UK CETA (in force July 2026), India–UAE CEPA, India–Australia ECTA, India–EU FTA concluded                  |
+| Supply-base gap      | Thousands of capable MSMEs have never exported; Himbridge's readiness service turns them into exporters           |
+| Brand clarity        | One origin, one story — "Made in India, delivered to the world"                                                   |
 
 > Tariffs and FTAs move fast. Every lane in the portal carries a "verify current duty" flag; the duty calculator uses editable rates, not hard-coded truth.
 
@@ -28,46 +28,43 @@ Himbridge is a **360° cross-border trade ecosystem**. We onboard verified manuf
 
 Scored 1–5 on **Global demand**, **Margin**, **Ease of entry** (low MOQ, low compliance), and **Origin advantage**. Phase 1 picks are starred.
 
-### India-origin niches
+### Niches by sector (all India-origin)
 
-| #   | Niche                                                                | Clusters                                     | Best markets                         | Demand | Margin | Ease | Edge | Score  |
-| --- | -------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------ | ------ | ------ | ---- | ---- | ------ |
-| ★1  | Handicrafts & home décor (brass, wood carving, marble, blue pottery) | Moradabad, Jodhpur, Jaipur, Saharanpur, Agra | USA, UK, Germany, UAE, Australia     | 5      | 5      | 4    | 5    | **19** |
-| ★2  | Solid wood & cane furniture (sheesham, mango, acacia)                | Jodhpur, Saharanpur, Kerala                  | USA, Netherlands, Germany, Australia | 5      | 4      | 3    | 5    | **17** |
-| ★3  | Home textiles (bedding, towels, throws, cushion covers)              | Panipat, Karur, Solapur                      | USA, UK, EU                          | 5      | 3      | 4    | 4    | **16** |
-| ★4  | Rugs & carpets (hand-knotted, flat-weave, jute)                      | Bhadohi, Mirzapur, Panipat, Jaipur           | USA, Germany, UK                     | 4      | 5      | 3    | 5    | **17** |
-| 5   | Ayurvedic, herbal & wellness                                         | Kerala, Uttarakhand, Gujarat                 | UAE, USA, UK                         | 4      | 5      | 2    | 5    | **16** |
-| 6   | Leather goods & footwear                                             | Kanpur, Agra, Chennai, Kolkata               | EU, USA, UK                          | 4      | 4      | 3    | 4    | **15** |
-| 7   | Fashion jewellery & gemstones                                        | Jaipur, Surat, Mumbai                        | USA, UAE, Hong Kong                  | 4      | 5      | 3    | 4    | **16** |
-| 8   | Spices & specialty foods                                             | Kerala, Rajasthan, Gujarat                   | GCC, USA, EU                         | 5      | 3      | 2    | 5    | **15** |
-| 9   | Sustainable/organic cotton apparel                                   | Tiruppur, Ludhiana, Jaipur                   | EU, UK, USA                          | 4      | 3      | 3    | 4    | **14** |
+| #   | Niche                              | Sector             | Clusters                                        | Best markets                         | Demand | Margin | Ease | Edge | Score  |
+| --- | ---------------------------------- | ------------------ | ----------------------------------------------- | ------------------------------------ | ------ | ------ | ---- | ---- | ------ |
+| ★1  | Handicrafts & home décor           | Home & Living      | Moradabad, Jodhpur, Jaipur, Saharanpur, Agra    | USA, UK, Germany, UAE, Australia     | 5      | 5      | 4    | 5    | **19** |
+| ★2  | Solid wood & cane furniture        | Home & Living      | Jodhpur, Saharanpur, Kerala                     | USA, Netherlands, Germany, Australia | 5      | 4      | 3    | 5    | **17** |
+| ★3  | Rugs & carpets                     | Home & Living      | Bhadohi, Mirzapur, Panipat, Jaipur              | USA, Germany, UK                     | 4      | 5      | 3    | 5    | **17** |
+| ★4  | Home textiles                      | Home & Living      | Panipat, Karur, Solapur                         | USA, UK, EU                          | 5      | 3      | 4    | 4    | **16** |
+| ★5  | Spices & masalas                   | Food & Agri        | Kerala, Rajasthan, Gujarat                      | GCC, USA, EU                         | 5      | 3      | 2    | 5    | **15** |
+| ★6  | Sustainable cotton apparel         | Fashion & Textiles | Tiruppur, Ludhiana, Jaipur                      | EU, UK, USA                          | 4      | 3      | 3    | 4    | **14** |
+| 7   | Basmati rice & grains              | Food & Agri        | Karnal, Amritsar, Kaithal, Dehradun             | Saudi Arabia, UAE, Iraq, USA, UK     | 5      | 3      | 3    | 5    | **16** |
+| 8   | Tea & coffee                       | Food & Agri        | Assam, Darjeeling, Nilgiris, Coorg, Chikmagalur | UAE, Russia, UK, Germany, Italy, USA | 4      | 4      | 3    | 5    | **16** |
+| 9   | Cashew, makhana & superfoods       | Food & Agri        | Kollam, Mangaluru, Darbhanga, Madhubani         | UAE, USA, Netherlands, UK, Japan     | 4      | 4      | 3    | 5    | **16** |
+| 10  | Handloom, silk & sarees            | Fashion & Textiles | Varanasi, Kanchipuram, Bhagalpur, Mysuru        | USA, UAE, UK, Singapore, Canada      | 4      | 5      | 3    | 5    | **17** |
+| 11  | Fashion jewellery & gemstones      | Fashion & Textiles | Jaipur, Surat, Mumbai                           | USA, UAE, Hong Kong                  | 4      | 5      | 3    | 4    | **16** |
+| 12  | Leather goods & footwear           | Fashion & Textiles | Kanpur, Agra, Chennai, Kolkata                  | EU, USA, UK                          | 4      | 4      | 3    | 4    | **15** |
+| 13  | Ayurvedic, herbal & wellness       | Wellness & Natural | Kerala, Uttarakhand, Gujarat                    | UAE, USA, UK                         | 4      | 5      | 2    | 5    | **16** |
+| 14  | Essential oils & natural cosmetics | Wellness & Natural | Kannauj, Kerala, Uttarakhand, Tamil Nadu        | USA, France, UK, UAE                 | 4      | 5      | 3    | 4    | **16** |
+| 15  | Incense, candles & festive décor   | Wellness & Natural | Bengaluru, Mysuru, Gaya, Moradabad              | USA, UAE, UK, Nigeria, Mexico        | 4      | 4      | 4    | 5    | **17** |
+| 16  | Natural stone, marble & granite    | Home & Living      | Makrana, Kishangarh, Udaipur, Karimnagar        | USA, UK, GCC, Italy, Australia       | 4      | 4      | 2    | 5    | **15** |
 
-### China-origin niches
-
-| #   | Niche                                            | Clusters                    | Best markets               | Demand | Margin | Ease | Edge | Score  |
-| --- | ------------------------------------------------ | --------------------------- | -------------------------- | ------ | ------ | ---- | ---- | ------ |
-| ★10 | LED lighting & solar accessories                 | Zhongshan, Ningbo, Shenzhen | Africa, GCC, LATAM, India  | 5      | 4      | 4    | 5    | **18** |
-| ★11 | Electronics & mobile accessories / smart gadgets | Shenzhen, Dongguan          | Global, Africa, GCC, LATAM | 5      | 3      | 4    | 5    | **17** |
-| ★12 | Modern, office & outdoor furniture               | Foshan, Anji                | GCC, Africa, Australia     | 4      | 4      | 3    | 5    | **16** |
-| 13  | Packaging (eco mailers, boxes, paper bags)       | Dongguan, Wenzhou           | Global                     | 5      | 3      | 4    | 4    | **16** |
-| 14  | Hardware, tools & building materials             | Yongkang, Foshan            | GCC, Africa, SE Asia       | 4      | 3      | 3    | 5    | **15** |
-| 15  | Home, kitchen & small appliances                 | Ningbo, Yiwu, Guangzhou     | Global                     | 5      | 3      | 4    | 5    | **17** |
-| 16  | Toys, festive & party décor                      | Yiwu, Shantou               | Global, seasonal           | 4      | 3      | 3    | 5    | **15** |
+The live list is `src/domain/niches.ts`; this table is a snapshot.
 
 ### Phase plan
 
-- **Phase 1 (months 0–6):** Handicrafts & décor, wood furniture, rugs, home textiles (India) + LED/solar, home & kitchen (China). One "home & living" story = easy international branding.
-- **Phase 2 (6–12):** Wellness/herbal, jewellery, leather (India) + electronics accessories, packaging (China).
-- **Phase 3 (12+):** Hybrid "Made in India with global components", private-label Himbridge brands, B2B2C marketplaces (Amazon Global, Etsy wholesale, Faire).
+- **Phase 1 (months 0–6):** Handicrafts & décor, wood furniture, rugs, home textiles, spices, cotton apparel.
+- **Phase 2 (6–12):** Basmati, tea & coffee, cashew & makhana, handloom silk, jewellery, leather, wellness.
+- **Phase 3 (12+):** Stone, essential oils, incense & festive; private-label Himbridge brands; B2B2C channels (Amazon Global, Etsy wholesale, Faire).
 
 ### Target export markets (priority order)
 
-1. **USA** — largest home & living importer; strong China+1 demand.
+1. **USA** — largest home & living importer; watch the changing tariff on Indian goods.
 2. **UAE / GCC** — re-export hub to Africa & Middle East; India–UAE CEPA.
-3. **UK** — India–UK FTA; handmade & sustainable sells.
+3. **UK** — India–UK CETA in force since July 2026 (zero duty on most lines); handmade & sustainable sells.
 4. **Germany / Netherlands** — EU gateway; furniture & rugs.
 5. **Australia** — India–Australia ECTA; furniture & décor.
-6. **Africa (Nigeria, Kenya, South Africa)** — China electronics/solar, price-led.
+6. **Africa (Nigeria, Kenya, South Africa)** — rice, spices, apparel, incense; large Indian diaspora.
 
 ---
 
@@ -76,7 +73,7 @@ Scored 1–5 on **Global demand**, **Margin**, **Ease of entry** (low MOQ, low c
 | Role                       | Who                                                                             | What they do on Himbridge                                                                     |
 | -------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | **Buyer**                  | Importers, retailers, e-commerce brands, interior firms, distributors worldwide | Browse catalog, post RFQs, compare quotes, place orders, track shipments, download docs       |
-| **Vendor**                 | Manufacturers, artisan clusters, exporters in India & China                     | KYC/verification, list products, quote on RFQs, manage production, upload QC photos           |
+| **Vendor**                 | Indian manufacturers, artisan clusters and exporters                            | KYC/verification, list products, quote on RFQs, manage production, upload QC photos           |
 | **Logistics partner**      | Freight forwarders, CHAs, inspection agencies                                   | Get assigned shipments, update milestones (booking → loading → sailing → customs → delivered) |
 | **Admin (Himbridge team)** | Operations, compliance, account managers                                        | Approve vendors, moderate products, assign logistics, monitor orders, publish notices         |
 
@@ -88,7 +85,7 @@ Future roles: **QC inspector**, **trade-finance partner**, **country agent/sourc
 
 1. **Public portal** — government-portal-style home: notices ticker, quick-access service tiles, niche directory, stats, corridor map, help desk.
 2. **Identity & access** — registration per role, login, session security, role-based dashboards, vendor KYC states (`pending → verified → suspended`).
-3. **Vendor onboarding** — company profile, origin (IN/CN), cluster, niche, certifications (IEC, GST, BSCI, ISO, FSC, CE), capacity, verification badge.
+3. **Vendor onboarding** — company profile, cluster, niche (which sets the sector), certifications (IEC, GST, RCMC, FSSAI, BSCI, ISO, FSC), capacity, verification badge.
 4. **Product catalog** — niche, origin, HS code, MOQ, FOB price range, lead time; filters by origin/niche.
 5. **RFQ & quotation engine** — buyer posts RFQ → matching vendors quote → buyer accepts → order created.
 6. **Order management** — milestones: `Confirmed → In production → QC passed → Shipped → Customs → Delivered`.
@@ -117,8 +114,8 @@ Later modules: escrow/payment milestones (LC, advance + balance), sample orders,
 
 ## 6. "International hype" go-to-market
 
-- **Brand story:** "Two manufacturing giants, one trusted desk." Video series from clusters (Moradabad brass, Jodhpur furniture, Foshan factories).
-- **Trade fairs:** IHGF Delhi Fair, Canton Fair (Guangzhou), Ambiente (Frankfurt), High Point (USA), Index Dubai — exhibit as Himbridge pavilion.
+- **Brand story:** "Made in India. Delivered to the world." Video series from clusters (Moradabad brass, Jodhpur furniture, Bhadohi rugs, Kerala spices, Varanasi silk).
+- **Trade fairs:** IHGF Delhi Fair, Bharat Tex, India International Spice Conference, Gulfood (Dubai), Ambiente (Frankfurt), High Point (USA), Index Dubai — exhibit as Himbridge pavilion.
 - **LinkedIn + Instagram** buyer-facing content; cold outbound to importers via trade data (Panjiva/Volza-type data).
 - **Marketplace presence:** Faire, Etsy Wholesale, Amazon Global Selling as demand testers.
 - **Partnerships:** Export Promotion Councils (EPCH, CEPC), chambers of commerce, freight forwarders.
@@ -143,13 +140,13 @@ Later modules: escrow/payment milestones (LC, advance + balance), sample orders,
 
 ### Demo logins (password for all: `Himbridge@123`)
 
-| Role                | Email                     |
-| ------------------- | ------------------------- |
-| Admin               | admin@himbridge.trade     |
-| Buyer               | buyer@himbridge.trade     |
-| Vendor (Crafted)    | vendor.in@himbridge.trade |
-| Vendor (Engineered) | vendor.cn@himbridge.trade |
-| Logistics           | logistics@himbridge.trade |
+| Role                 | Email                     |
+| -------------------- | ------------------------- |
+| Admin                | admin@himbridge.trade     |
+| Buyer                | buyer@himbridge.trade     |
+| Vendor (Handicrafts) | vendor.in@himbridge.trade |
+| Vendor (Spices)      | spices@himbridge.trade    |
+| Logistics            | logistics@himbridge.trade |
 
 ---
 

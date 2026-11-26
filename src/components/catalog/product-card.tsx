@@ -5,7 +5,7 @@ import type { CSSProperties } from 'react';
 import { getNiche } from '@/domain/niches';
 import { useT } from '@/i18n/client';
 import { fmtNum, singularUnit, usd } from '@/lib/format';
-import { CollectionChip, Placeholder } from '../ui/primitives';
+import { SectorChip, Placeholder } from '../ui/primitives';
 
 export interface ProductCardData {
   id: number;
@@ -20,7 +20,6 @@ export interface ProductCardData {
   material: string;
   imageId: number | null;
   vendorCompany: string;
-  origin: string;
   cluster: string;
 }
 
@@ -32,13 +31,13 @@ export function ProductCard({ p }: { p: ProductCardData }) {
     <article className="pcard" style={{ '--c': n?.color ?? '#0b2a5b' } as CSSProperties}>
       {p.imageId ? (
         <div className="pthumb">
-          <CollectionChip origin={p.origin} />
+          <SectorChip niche={p.niche} />
           {/* eslint-disable-next-line @next/next/no-img-element -- user-uploaded image served by /files */}
           <img src={`/files/${p.imageId}`} alt={p.title} loading="lazy" />
         </div>
       ) : (
         <Placeholder label="Product image" size="800 × 600" className="pthumb">
-          <CollectionChip origin={p.origin} />
+          <SectorChip niche={p.niche} />
         </Placeholder>
       )}
       <div className="pbody">

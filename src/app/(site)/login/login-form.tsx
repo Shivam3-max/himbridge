@@ -12,8 +12,8 @@ const DEMO: [label: string, email: string][] = [
   ['Admin (Himbridge team)', 'admin@himbridge.trade'],
   ['Buyer — USA', 'buyer@himbridge.trade'],
   ['Buyer — UAE', 'omar@gulfliving.ae'],
-  ['Vendor — Crafted', 'vendor.in@himbridge.trade'],
-  ['Vendor — Engineered', 'vendor.cn@himbridge.trade'],
+  ['Vendor — Handicrafts', 'vendor.in@himbridge.trade'],
+  ['Vendor — Spices', 'spices@himbridge.trade'],
   ['Vendor — pending KYC', 'kerala@himbridge.trade'],
   ['Logistics partner', 'logistics@himbridge.trade'],
 ];

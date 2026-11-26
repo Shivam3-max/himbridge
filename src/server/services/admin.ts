@@ -33,7 +33,6 @@ export async function listUsers(viewer: CurrentUser) {
       country: user.country,
       status: user.status,
       createdAt: user.createdAt,
-      origin: vendorProfile.origin,
       niche: vendorProfile.niche,
       cluster: vendorProfile.cluster,
       certifications: vendorProfile.certifications,

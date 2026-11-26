@@ -3,20 +3,17 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { NICHES, nicheScore } from '@/domain/niches';
+import { SECTORS, SECTOR_KEYS, type SectorKey } from '@/domain/sectors';
 import { useT } from '@/i18n/client';
-import { Badge, CollectionChip, Placeholder, ScoreBar } from '../ui/primitives';
+import { Badge, SectorChip, Placeholder, ScoreBar } from '../ui/primitives';
 
-const TABS = [
-  ['', 'All'],
-  ['IN', 'Crafted'],
-  ['CN', 'Engineered'],
-] as const;
+const TABS: readonly (readonly ['' | SectorKey, string])[] = [['', 'All'], ...SECTOR_KEYS.map((k) => [k, SECTORS[k].name] as const)];
 
-/** Category scorecard with an All / Crafted / Engineered switch. */
+/** Category scorecard with an All / per-sector switch. */
 export function NicheScorecard() {
   const t = useT();
-  const [origin, setOrigin] = useState<'' | 'IN' | 'CN'>('');
-  const rows = NICHES.filter((n) => !origin || n.origin === origin)
+  const [sector, setSector] = useState<'' | SectorKey>('');
+  const rows = NICHES.filter((n) => !sector || n.sector === sector)
     .map((n) => ({ ...n, total: nicheScore(n) }))
     .sort((a, b) => b.total - a.total);
   return (
@@ -29,9 +26,9 @@ export function NicheScorecard() {
               key={label}
               type="button"
               role="tab"
-              aria-selected={origin === value}
-              className={origin === value ? 'btn sm' : 'btn sm ghost'}
-              onClick={() => setOrigin(value)}
+              aria-selected={sector === value}
+              className={sector === value ? 'btn sm' : 'btn sm ghost'}
+              onClick={() => setSector(value)}
             >
               {t(label)}
             </button>
@@ -44,7 +41,7 @@ export function NicheScorecard() {
             <tr>
               <th />
               <th>{t('Category')}</th>
-              <th>{t('Collection')}</th>
+              <th>{t('Sector')}</th>
               <th>{t('Clusters')}</th>
               <th>{t('Best markets')}</th>
               <th>{t('Demand')}</th>
@@ -68,7 +65,7 @@ export function NicheScorecard() {
                   </Link>
                 </td>
                 <td>
-                  <CollectionChip origin={n.origin} />
+                  <SectorChip niche={n.slug} />
                 </td>
                 <td className="small">{n.clusters}</td>
                 <td className="small">{n.markets}</td>

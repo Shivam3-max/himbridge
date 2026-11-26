@@ -5,7 +5,6 @@ Photos from [Unsplash](https://unsplash.com), used under the [Unsplash License](
 | File | Source |
 |---|---|
 | hero-crafted.jpg | https://unsplash.com/photos/3irPFKfB0o0 |
-| hero-engineered.jpg | https://unsplash.com/photos/sz1CHL7Pky0 |
 | hero-quality.jpg | https://unsplash.com/photos/_luiFaaZU6k |
 | hero-delivery.jpg | https://unsplash.com/photos/1cqIcrWFQBI |
 | banner-marketplace.jpg | https://unsplash.com/photos/L7EwHkq1B2s |

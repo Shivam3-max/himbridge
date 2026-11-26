@@ -4,7 +4,7 @@ import { ProductCard } from '@/components/catalog/product-card';
 import { HeroSlider } from '@/components/home/hero-slider';
 import { NetworkMap } from '@/components/home/network-map';
 import { Placeholder } from '@/components/ui/primitives';
-import { collectionName } from '@/domain/collections';
+import { sectorName } from '@/domain/sectors';
 import { NICHES } from '@/domain/niches';
 import { getI18n } from '@/i18n/server';
 import { fmtNum, usd } from '@/lib/format';
@@ -126,19 +126,24 @@ const MARKETS: [string, string, string, string][] = [
     'Décor, furniture, rugs, textiles',
     'Check current tariff schedule; CPSC / Prop 65 for consumer goods',
   ],
-  ['UAE / GCC', 'Re-export hub to Middle East & Africa', 'Solar, appliances, furniture, spices', '5% VAT; G-Mark / ECAS for electricals'],
+  [
+    'UAE / GCC',
+    'Re-export hub to Middle East & Africa',
+    'Basmati, spices, tea, furniture',
+    '5% VAT; Halal & food labelling rules; India–UAE CEPA',
+  ],
   [
     'United Kingdom',
     'Premium demand for handmade & sustainable',
     'Textiles, décor, leather, wellness',
-    'UKCA marking; preferential tariffs may apply',
+    'India–UK CETA: zero duty on most Indian goods',
   ],
   ['Germany / Netherlands', 'EU gateway; Ambiente & Rotterdam port', 'Rugs, furniture, décor', 'CE marking; EUDR due diligence for wood'],
   ['Australia', 'Fast-growing furniture & décor retail', 'Furniture, décor, textiles', 'Biosecurity treatment for wood & natural fibres'],
   [
     'Africa (NG, KE, ZA)',
-    'Price-led infrastructure & consumer demand',
-    'Solar, electronics, hardware',
+    'Large Indian diaspora & price-led demand',
+    'Rice, spices, apparel, incense',
     'Pre-shipment certificates (SONCAP, PVoC)',
   ],
 ];
@@ -161,15 +166,15 @@ export default async function HomePage() {
       <section className="hero">
         <div className="wrap">
           <div>
-            <span className="hero-kicker">{t('● Verified factories · 40+ export markets')}</span>
+            <span className="hero-kicker">{t('● Verified Indian manufacturers · 40+ export markets')}</span>
             <h1>
-              <span>{t('World-class manufacturing.')}</span>
+              <span>{t('Made in India.')}</span>
               <br />
-              <em>{t('One trusted export desk.')}</em>
+              <em>{t('Delivered to the world.')}</em>
             </h1>
             <p className="lead">
               {t(
-                'Source verified handicrafts, furniture, textiles, lighting and more from audited manufacturers — with quotations, quality inspection, export paperwork and door-to-door shipping handled on a single portal.',
+                'Source handicrafts, rugs, textiles, spices, basmati, tea and more from audited Indian manufacturers — with quotations, quality inspection, export paperwork and door-to-door shipping handled on a single portal.',
               )}
             </p>
             <form className="hero-search" action="/marketplace">
@@ -183,7 +188,7 @@ export default async function HomePage() {
               </select>
               <input
                 name="q"
-                placeholder={t('What do you want to import? e.g. brass planters, solar lights')}
+                placeholder={t('What do you want to import? e.g. brass planters, turmeric, silk stoles')}
                 aria-label={t('Search products')}
               />
               <button>{t('Search')}</button>
@@ -253,7 +258,7 @@ export default async function HomePage() {
                     style={{ '--c': n.color } as CSSProperties}
                     href={`/marketplace?niche=${n.slug}`}
                   >
-                    <Placeholder label={collectionName(n.origin)} size="Image" className="niche-img" />
+                    <Placeholder label={sectorName(n.slug)} size="Image" className="niche-img" />
                     <span>
                       <b>{t(n.name)}</b>
                       <small>{n.clusters}</small>

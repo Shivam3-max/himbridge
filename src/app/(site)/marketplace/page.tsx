@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { MarketplaceFilters } from '@/components/catalog/marketplace-filters';
 import { ProductCard } from '@/components/catalog/product-card';
 import { PageBanner, PageBar } from '@/components/ui/primitives';
-import { originFromCollectionKey } from '@/domain/collections';
+import { isSector } from '@/domain/sectors';
 import { getNiche } from '@/domain/niches';
 import { getI18n } from '@/i18n/server';
 import { listProducts } from '@/server/services/catalog';
@@ -17,9 +17,12 @@ export default async function MarketplacePage({ searchParams }: { searchParams: 
   const sp = await searchParams;
   const q = one(sp.q).slice(0, 100);
   const niche = getNiche(one(sp.niche)) ? one(sp.niche) : '';
-  const origin = originFromCollectionKey(one(sp.c));
-  const c = origin ? one(sp.c) : '';
-  const [{ t }, products] = await Promise.all([getI18n(), listProducts({ q, niche: niche || undefined, origin })]);
+  const sector = isSector(one(sp.c)) ? one(sp.c) : '';
+  const c = sector;
+  const [{ t }, products] = await Promise.all([
+    getI18n(),
+    listProducts({ q, niche: niche || undefined, sector: isSector(sector) ? sector : undefined }),
+  ]);
 
   return (
     <>

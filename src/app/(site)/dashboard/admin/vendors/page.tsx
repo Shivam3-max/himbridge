@@ -1,6 +1,6 @@
 import { FileList } from '@/components/dashboard/files';
 import { VendorStatusButtons } from '@/components/dashboard/trade-forms';
-import { Badge, Block, CollectionChip } from '@/components/ui/primitives';
+import { Badge, Block, SectorChip } from '@/components/ui/primitives';
 import { nicheName } from '@/domain/niches';
 import { getI18n } from '@/i18n/server';
 import { requirePageUser } from '@/server/auth/session';
@@ -23,7 +23,7 @@ export default async function VendorQueuePage() {
           <thead>
             <tr>
               <th>{t('Company')}</th>
-              <th>{t('Collection')}</th>
+              <th>{t('Sector')}</th>
               <th>{t('Category')}</th>
               <th>{t('Certifications')}</th>
               <th>{t('KYC documents')}</th>
@@ -44,7 +44,7 @@ export default async function VendorQueuePage() {
                     </span>
                   </td>
                   <td>
-                    <CollectionChip origin={v.origin} />
+                    <SectorChip niche={v.niche} />
                     <br />
                     <span className="tiny muted">{v.cluster}</span>
                   </td>

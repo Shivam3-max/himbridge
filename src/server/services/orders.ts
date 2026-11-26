@@ -41,7 +41,7 @@ export async function listOrders(viewer: CurrentUser) {
       buyerCompany: buyer.company,
       buyerCountry: buyer.country,
       vendorCompany: vendor.company,
-      vendorOrigin: vendorProfile.origin,
+      vendorNiche: vendorProfile.niche,
       logisticsCompany: logistics.company,
     })
     .from(order)
@@ -95,7 +95,7 @@ export async function listOrders(viewer: CurrentUser) {
     buyerCompany: r.buyerCompany,
     buyerCountry: r.buyerCountry,
     vendorCompany: r.vendorCompany,
-    vendorOrigin: r.vendorOrigin,
+    vendorNiche: r.vendorNiche,
     logisticsCompany: r.logisticsCompany,
     milestones: milestones.filter((m) => m.orderId === r.order.id),
     payments: payments.filter((p) => p.orderId === r.order.id),
@@ -169,7 +169,7 @@ export async function trackOrder(code: string) {
       originPort: order.originPort,
       destPort: order.destPort,
       createdAt: order.createdAt,
-      vendorOrigin: vendorProfile.origin,
+      vendorNiche: vendorProfile.niche,
     })
     .from(order)
     .leftJoin(vendorProfile, eq(vendorProfile.userId, order.vendorId))
@@ -197,7 +197,7 @@ export async function getOrderDocument(viewer: CurrentUser, orderId: number) {
       vendorCompany: vendor.company,
       vendorCountry: vendor.country,
       vendorCluster: vendorProfile.cluster,
-      vendorOrigin: vendorProfile.origin,
+      vendorNiche: vendorProfile.niche,
       leadDays: quote.leadDays,
       niche: rfq.niche,
       details: rfq.details,

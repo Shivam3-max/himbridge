@@ -75,7 +75,7 @@ export function NetworkMap() {
       <div className="netmap-foot">
         <span>
           <i className="lg hub" />
-          {t('Sourcing hubs')}
+          {t('Made in India')}
         </span>
         <span>
           <i className="lg mkt" />

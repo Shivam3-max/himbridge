@@ -13,7 +13,8 @@ const serif = Noto_Serif({ subsets: ['latin'], weight: ['600', '700'], variable:
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL ?? 'http://localhost:3000'),
   title: { default: `${BRAND.full} — Verified Sourcing, Export Worldwide`, template: `%s — ${BRAND.full}` },
-  description: 'Verified manufacturers, RFQs, quality inspection, export documentation and door-to-door logistics on one portal.',
+  description:
+    'Verified Indian manufacturers, RFQs, quality inspection, export documentation and door-to-door logistics to 40+ markets on one portal.',
   openGraph: { siteName: BRAND.full, type: 'website' },
 };
 

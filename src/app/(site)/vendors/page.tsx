@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Badge, CollectionChip, PageBanner, PageBar, Placeholder } from '@/components/ui/primitives';
+import { Badge, SectorChip, PageBanner, PageBar, Placeholder } from '@/components/ui/primitives';
 import { nicheName } from '@/domain/niches';
 import { getI18n } from '@/i18n/server';
 import { listVerifiedVendors } from '@/server/services/catalog';
@@ -42,7 +42,7 @@ export default async function VendorsPage() {
                       <Badge tone="ok">✔ {t('Verified')}</Badge>
                     </div>
                     <div className="small muted" style={{ margin: '4px 0 8px' }}>
-                      <CollectionChip origin={v.origin} /> &nbsp;{v.cluster} · {t(nicheName(v.niche))}
+                      <SectorChip niche={v.niche} /> &nbsp;{v.cluster} · {t(nicheName(v.niche))}
                     </div>
                     <p className="small">{v.about}</p>
                     <div className="kv">

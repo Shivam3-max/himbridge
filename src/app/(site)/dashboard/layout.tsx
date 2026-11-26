@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { MENUS } from '@/components/dashboard/menu';
 import { SidebarNav } from '@/components/dashboard/sidebar';
-import { Badge, CollectionChip, Placeholder } from '@/components/ui/primitives';
+import { Badge, SectorChip, Placeholder } from '@/components/ui/primitives';
 import { ROLE_LABEL } from '@/domain/roles';
 import { getI18n } from '@/i18n/server';
 import { requirePageUser } from '@/server/auth/session';
@@ -36,7 +36,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
             </span>
             {me.vendor && (
               <div style={{ marginTop: 6 }}>
-                <CollectionChip origin={me.vendor.origin} />{' '}
+                <SectorChip niche={me.vendor.niche} />{' '}
                 <Badge tone={me.vendor.verification === 'verified' ? 'ok' : 'warn'}>{me.vendor.verification}</Badge>
               </div>
             )}

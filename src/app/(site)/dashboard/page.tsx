@@ -151,8 +151,8 @@ async function AdminOverview({ me }: { me: CurrentUser }) {
       />
       <Kpis
         items={[
-          ['Crafted vendors', s.vendorsCrafted, 'var(--saffron)'],
-          ['Engineered vendors', s.vendorsEngineered, '#1d4f91'],
+          ['Artisan clusters', s.clusters, 'var(--saffron)'],
+          ['Product categories', s.niches, '#1d4f91'],
           ['Live SKUs', s.products],
           ['Payments to confirm', toConfirm, 'var(--red)'],
         ]}

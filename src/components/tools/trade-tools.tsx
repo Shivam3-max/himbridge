@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from 'react';
 import { landedCost, type LandedCostInput } from '@/domain/landed-cost';
-import { EXPORT_DOCS, HS_CODES } from '@/domain/trade-reference';
+import { SECTORS, SECTOR_KEYS, type SectorKey } from '@/domain/sectors';
+import { EXPORT_DOCS_BY_SECTOR, EXPORT_DOCS_COMMON, HS_CODES } from '@/domain/trade-reference';
 import { useT } from '@/i18n/client';
 import { usd } from '@/lib/format';
 
@@ -176,24 +177,22 @@ export function HsCodeFinder() {
 
 export function ExportDocsChecklist() {
   const t = useT();
-  const [lane, setLane] = useState<'IN' | 'CN'>('IN');
+  const [sector, setSector] = useState<SectorKey>('home');
   return (
     <div className="block" id="docs">
       <div className="block-head saffron">
         <h3>{t('Export Documentation Checklist')}</h3>
-        <select
-          value={lane}
-          onChange={(e) => setLane(e.target.value as 'IN' | 'CN')}
-          style={{ maxWidth: 190 }}
-          aria-label={t('Factory country')}
-        >
-          <option value="IN">{t('Factory in India')}</option>
-          <option value="CN">{t('Factory in China')}</option>
+        <select value={sector} onChange={(e) => setSector(e.target.value as SectorKey)} style={{ maxWidth: 190 }} aria-label={t('Sector')}>
+          {SECTOR_KEYS.map((k) => (
+            <option key={k} value={k}>
+              {t(SECTORS[k].name)}
+            </option>
+          ))}
         </select>
       </div>
       <div className="block-body">
         <ul className="small" style={{ margin: 0, paddingLeft: 0, listStyle: 'none', lineHeight: 2 }}>
-          {EXPORT_DOCS[lane].map((d) => (
+          {[...EXPORT_DOCS_COMMON, ...EXPORT_DOCS_BY_SECTOR[sector]].map((d) => (
             <li key={d}>☐ {t(d)}</li>
           ))}
         </ul>

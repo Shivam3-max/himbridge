@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { FileList } from '@/components/dashboard/files';
 import { AcceptQuoteButton } from '@/components/dashboard/trade-forms';
-import { Badge, Block, CollectionChip, Empty } from '@/components/ui/primitives';
+import { Badge, Block, SectorChip, Empty } from '@/components/ui/primitives';
 import { nicheName } from '@/domain/niches';
 import { getI18n } from '@/i18n/server';
 import { fmtDate, fmtNum, usd } from '@/lib/format';
@@ -51,7 +51,7 @@ export default async function RfqsPage() {
             {t('Target')} <b>{r.targetPrice ? usd(r.targetPrice) : '—'}</b>
           </span>
           <span>
-            {t('Collection')} <CollectionChip origin={r.originPref} />
+            {t('Sector')} <SectorChip niche={r.niche} />
           </span>
         </div>
         {r.details && <p className="small">{r.details}</p>}
@@ -62,7 +62,7 @@ export default async function RfqsPage() {
               <thead>
                 <tr>
                   <th>{t('Vendor')}</th>
-                  <th>{t('Collection')}</th>
+                  <th>{t('Sector')}</th>
                   <th className="right">{t('Unit price')}</th>
                   <th className="right">{t('Order value')}</th>
                   <th>{t('Lead time')}</th>
@@ -79,7 +79,7 @@ export default async function RfqsPage() {
                       <span className="tiny muted">{q.certifications}</span>
                     </td>
                     <td>
-                      <CollectionChip origin={q.origin} />
+                      <SectorChip niche={q.vendorNiche} />
                     </td>
                     <td className="right">{usd(q.unitPrice)}</td>
                     <td className="right">{usd(q.unitPrice * r.quantity, 0)}</td>
@@ -116,7 +116,7 @@ function AdminRfqTable({ rfqs, t }: { rfqs: RfqWithQuotes[]; t: (s: string) => s
               <th>{t('Requirement')}</th>
               <th>{t('Buyer')}</th>
               <th>{t('Qty')}</th>
-              <th>{t('Collection')}</th>
+              <th>{t('Sector')}</th>
               <th>{t('Quotes')}</th>
               <th>{t('Status')}</th>
             </tr>
@@ -137,7 +137,7 @@ function AdminRfqTable({ rfqs, t }: { rfqs: RfqWithQuotes[]; t: (s: string) => s
                   {fmtNum(r.quantity)} {r.unit}
                 </td>
                 <td>
-                  <CollectionChip origin={r.originPref} />
+                  <SectorChip niche={r.niche} />
                 </td>
                 <td>
                   {r.quoteCount}
