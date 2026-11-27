@@ -6,6 +6,7 @@ import { NetworkMap } from '@/components/home/network-map';
 import { Placeholder } from '@/components/ui/primitives';
 import { sectorName } from '@/domain/sectors';
 import { NICHES } from '@/domain/niches';
+import { HOME_PATHS } from '@/domain/audiences';
 import { getI18n } from '@/i18n/server';
 import { fmtNum, usd } from '@/lib/format';
 import { listNotices } from '@/server/services/admin';
@@ -70,7 +71,7 @@ const TILES: [href: string, title: string, sub: string, icon: React.ReactNode][]
 ];
 
 const STEPS: [string, string][] = [
-  ['Post requirement', 'Buyer submits an RFQ with quantity, destination, target price and specifications.'],
+  ['Tell us what you need', 'A product link and target price for small batches, or a full RFQ for container orders.'],
   ['Matched quotes', 'Matched, verified manufacturers quote. Compare price, lead time and certifications side by side.'],
   ['Confirm & produce', 'Accept a quote — order is created with milestone payments and production tracking.'],
   ['QC & documents', 'Pre-shipment inspection (AQL), invoice, packing list, COO and export clearance.'],
@@ -194,11 +195,14 @@ export default async function HomePage() {
               <button>{t('Search')}</button>
             </form>
             <div className="hero-actions">
-              <Link className="btn saffron" href="/dashboard/rfqs/new">
-                {t('Post a Buying Requirement')}
+              <Link className="btn saffron" href="/dashboard/sourcing/new">
+                {t('Start a sourcing request')}
               </Link>
-              <Link className="btn ghost" href="/register?role=vendor">
-                {t('Register as Manufacturer')}
+              <Link className="btn ghost" href="/dashboard/rfqs/new">
+                {t('Post a bulk RFQ')}
+              </Link>
+              <Link className="btn ghost" href="/export-ready">
+                {t('I am a manufacturer')}
               </Link>
             </div>
             <div className="small muted">
@@ -210,6 +214,29 @@ export default async function HomePage() {
       </section>
 
       <section className="section">
+        <div className="wrap">
+          <div className="section-head">
+            <h2 className="section-title">{t('Who are you sourcing for?')}</h2>
+            <span className="small muted">{t('From 50 pieces to full containers: pick the path that fits your business')}</span>
+          </div>
+          <div className="paths">
+            {HOME_PATHS.map(([href, img, title, size, text]) => (
+              <Link key={href} className="path-card" href={href}>
+                {/* eslint-disable-next-line @next/next/no-img-element -- decorative card photo */}
+                <img src={img} alt="" loading="lazy" />
+                <div className="path-body">
+                  <span className="path-size">{t(size)}</span>
+                  <b>{t(title)}</b>
+                  <p>{t(text)}</p>
+                  <span className="path-go">{t('See how it works')} →</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <div className="section-head">
             <h2 className="section-title">{t('Online Services')}</h2>

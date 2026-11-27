@@ -252,3 +252,4 @@ export const nicheName = (slug: string | null | undefined) => getNiche(slug)?.na
 export const nicheScore = (n: Niche) => n.demand + n.margin + n.ease + n.edge;
 /** First HS chapter of a niche — printed on trade documents. */
 export const primaryHs = (slug: string | null | undefined) => getNiche(slug)?.hs.split(',')[0]?.trim() ?? '';
+export const isNiche = (slug: string | null | undefined): slug is string => !!getNiche(slug);

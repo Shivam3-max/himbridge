@@ -22,6 +22,9 @@ const DATA_FILES = [
   'src/domain/files.ts',
   'src/domain/payments.ts',
   'src/domain/trade-reference.ts',
+  'src/domain/sourcing.ts',
+  'src/domain/audiences.ts',
+  'src/domain/export-readiness.ts',
 ];
 
 const walk = (dir: string): string[] =>
@@ -51,11 +54,19 @@ for (const file of walk('src')) {
 }
 
 for (const file of DATA_FILES) {
-  const src = readFileSync(file, 'utf8').replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, '');
+  const src = readFileSync(file, 'utf8').replace(/\/\*[\s\S]*?\*\/|(?<!:)\/\/.*$/gm, ''); // keep URLs like https://…;
   for (const m of src.matchAll(/'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)"/g)) {
     const s = (m[1] ?? m[2] ?? '').replace(/\\'/g, "'");
     // Skip identifiers, slugs, paths, codes and colours.
-    if (/^[a-z0-9_.@/#-]*$/.test(s) || /^[A-Z]{2,5}$/.test(s) || s.startsWith('/') || s.startsWith('#') || s.startsWith('%')) continue;
+    if (
+      /^[a-z0-9_.@/#-]*$/.test(s) ||
+      /^[A-Z]{2,5}$/.test(s) ||
+      s.startsWith('/') ||
+      s.startsWith('#') ||
+      s.startsWith('%') ||
+      /^https?:/.test(s)
+    )
+      continue;
     add(s);
   }
 }

@@ -13,6 +13,7 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { orderCode } from '../src/domain/order-flow';
 import { splitPayments } from '../src/domain/payments';
+import { sourcingCode } from '../src/domain/sourcing';
 import * as schema from '../src/server/db/schema';
 
 const DEMO_PASSWORD = 'Himbridge@123';
@@ -27,6 +28,7 @@ async function main() {
   const client = postgres(url, { max: 1 });
   const db = drizzle(client, { schema });
   const { user, account, vendorProfile, product, rfq, quote, order, milestone, payment, notice } = schema;
+  const { sourcingRequest, sourcingItem, sourcingOffer, sourcingOfferLine, sourcingMessage, vendorCompliance, serviceRequest } = schema;
 
   const [existing] = await db.select({ n: count() }).from(user);
   if ((existing?.n ?? 0) > 0) {
@@ -61,6 +63,21 @@ async function main() {
       'United Arab Emirates',
       '+971 4 555 0199',
     );
+    const brand = await addUser('buyer', 'Ava Lin', 'brand@himbridge.trade', 'Loom & Leaf (online store)', 'Australia', '+61 2 5550 0177');
+    const designer = await addUser(
+      'buyer',
+      'Sofia Rossi',
+      'designer@himbridge.trade',
+      'Studio Rossi Interiors',
+      'United Kingdom',
+      '+44 20 5550 0123',
+    );
+    await tx
+      .update(user)
+      .set({ buyerType: 'importer' })
+      .where(sql`${user.id} in (${buyer}, ${buyer2})`);
+    await tx.update(user).set({ buyerType: 'brand' }).where(eq(user.id, brand));
+    await tx.update(user).set({ buyerType: 'designer' }).where(eq(user.id, designer));
     const logi = await addUser(
       'logistics',
       'Rakesh Menon',
@@ -669,10 +686,293 @@ async function main() {
         createdAt: daysAgo(8),
       },
       {
-        title: 'New category live: LED Lighting & Solar — 40+ SKUs onboarded',
-        body: 'Africa and GCC buyers can now raise RFQs for solar street lights and LED panels.',
+        title: 'New: sourcing desk for brands and designers — order from 50 pieces with samples first',
+        body: 'Share a product link, your current cost and target price. Verified makers send itemised offers you can compare.',
         tag: 'Update',
+        createdAt: daysAgo(2),
+      },
+      {
+        title: 'Export Readiness Programme: IEC, LUT, RCMC and training for first-time exporters',
+        body: 'Manufacturers can track every registration from the dashboard checklist and ask our team to file them.',
+        tag: 'Programme',
         createdAt: daysAgo(12),
+      },
+    ]);
+
+    // ── Sourcing desk demo ─────────────────────────────────────
+    const admin = (await tx.select({ id: user.id }).from(user).where(eq(user.role, 'admin')))[0]!.id;
+    const addRequest = async (
+      values: Omit<typeof sourcingRequest.$inferInsert, 'id' | 'code'>,
+      items: Omit<typeof sourcingItem.$inferInsert, 'requestId' | 'position'>[],
+    ) => {
+      const [r] = await tx
+        .insert(sourcingRequest)
+        .values(values)
+        .returning({ id: sourcingRequest.id, createdAt: sourcingRequest.createdAt });
+      await tx
+        .update(sourcingRequest)
+        .set({ code: sourcingCode(r!.id, r!.createdAt.getFullYear()) })
+        .where(eq(sourcingRequest.id, r!.id));
+      const its = await tx
+        .insert(sourcingItem)
+        .values(items.map((it, i) => ({ ...it, requestId: r!.id, position: i })))
+        .returning({ id: sourcingItem.id });
+      return { id: r!.id, items: its.map((i) => i.id) };
+    };
+    const addOffer = async (
+      requestId: number,
+      vendorEmail: string,
+      o: {
+        moq: number;
+        leadDays: number;
+        samplePrice?: number;
+        sampleDays?: number;
+        note: string;
+        status?: 'submitted' | 'sample_requested';
+      },
+      lines: [itemId: number, unitPrice: number][],
+      createdAt: Date,
+    ) => {
+      const [row] = await tx
+        .insert(sourcingOffer)
+        .values({ requestId, vendorId: vid[vendorEmail]!, ...o, createdAt })
+        .returning({ id: sourcingOffer.id });
+      await tx.insert(sourcingOfferLine).values(lines.map(([itemId, unitPrice]) => ({ offerId: row!.id, itemId, unitPrice })));
+    };
+
+    const cushions = await addRequest(
+      {
+        buyerId: brand,
+        kind: 'manufacture',
+        niche: 'home-textiles',
+        title: 'Block-printed cushion covers & table runners — own label',
+        brief:
+          'Online homewares store selling in Australia and New Zealand. Earthy palette, organic or recycled cotton preferred, woven neck label and recycled-paper sleeve.',
+        storeUrl: 'https://example.com/loom-and-leaf',
+        destination: 'Melbourne, Australia',
+        shipping: 'advise',
+        terms: 'DDP',
+        reorder: 'quarterly',
+        samplesNeeded: true,
+        privateLabel: true,
+        customPackaging: true,
+        stage: 'offers',
+        createdAt: daysAgo(9),
+      },
+      [
+        {
+          name: 'Hand block-printed cushion cover 45 × 45 cm',
+          spec: 'Organic cotton canvas, 3 colourways, hidden zip, woven label',
+          referenceUrl: 'https://example.com/loom-and-leaf/cushion-terra',
+          quantity: 300,
+          unit: 'pcs',
+          currentPrice: 6.8,
+          targetPrice: 4.2,
+          retailPrice: 34,
+        },
+        {
+          name: 'Linen-cotton table runner 35 × 180 cm',
+          spec: 'Fringed ends, natural and indigo',
+          referenceUrl: '',
+          quantity: 200,
+          unit: 'pcs',
+          currentPrice: 9.5,
+          targetPrice: 5.8,
+          retailPrice: 42,
+        },
+      ],
+    );
+    await addOffer(
+      cushions.id,
+      'panipat@himbridge.trade',
+      {
+        moq: 200,
+        leadDays: 30,
+        samplePrice: 45,
+        sampleDays: 7,
+        note: 'GOTS organic canvas, hand block-printed in Sanganer. Woven labels and recycled sleeves included. 5% lower above 1,000 pcs.',
+      },
+      [
+        [cushions.items[0]!, 3.95],
+        [cushions.items[1]!, 5.6],
+      ],
+      daysAgo(5),
+    );
+    await addOffer(
+      cushions.id,
+      'bhadohi@himbridge.trade',
+      {
+        moq: 150,
+        leadDays: 24,
+        samplePrice: 30,
+        sampleDays: 6,
+        note: 'Flat-weave cotton covers from our own looms; runner in cotton slub. Labels supplied by buyer.',
+      },
+      [
+        [cushions.items[0]!, 4.4],
+        [cushions.items[1]!, 6.1],
+      ],
+      daysAgo(4),
+    );
+    await tx.insert(sourcingMessage).values([
+      {
+        requestId: cushions.id,
+        authorId: admin,
+        body: 'Hi Ava, two verified makers have quoted. Both can do your woven label; Panipat Home Textiles also supplies the recycled sleeves. Sample consolidation is free on your first project.',
+        createdAt: daysAgo(4),
+      },
+      {
+        requestId: cushions.id,
+        authorId: brand,
+        body: 'Thanks! Can the 300 cushions be split across 3 colourways?',
+        createdAt: daysAgo(3),
+      },
+      {
+        requestId: cushions.id,
+        authorId: admin,
+        body: 'Yes, 100 per colourway works for both makers at the quoted price.',
+        createdAt: daysAgo(3),
+      },
+    ]);
+
+    const hotel = await addRequest(
+      {
+        buyerId: designer,
+        kind: 'project',
+        niche: 'rugs',
+        title: 'Hotel Marlowe, London — lobby & suites',
+        brief: 'Boutique hotel refurbishment, 24 suites. Warm brass, natural wool, solid wood. Installation in early spring.',
+        destination: 'London, United Kingdom',
+        deliverBy: new Date(Date.now() + 95 * 864e5).toISOString().slice(0, 10),
+        shipping: 'sea',
+        terms: 'DAP',
+        reorder: 'one_off',
+        samplesNeeded: true,
+        stage: 'sampling',
+        createdAt: daysAgo(16),
+      },
+      [
+        {
+          name: 'Hand-knotted wool rug 300 × 400 cm',
+          spec: 'New Zealand wool, 100 knots/sq in, custom colour to Pantone swatches',
+          quantity: 6,
+          unit: 'pcs',
+          currentPrice: 2600,
+          targetPrice: 1450,
+        },
+        {
+          name: 'Brass pendant lamp, 40 cm dome',
+          spec: 'Antique brass finish, UK fittings and CE/UKCA marking',
+          quantity: 24,
+          unit: 'pcs',
+          currentPrice: 160,
+          targetPrice: 85,
+        },
+        {
+          name: 'Solid sheesham side table',
+          spec: '45 cm round, walnut stain, knock-down top',
+          quantity: 18,
+          unit: 'pcs',
+          currentPrice: 240,
+          targetPrice: 120,
+        },
+      ],
+    );
+    await addOffer(
+      hotel.id,
+      'bhadohi@himbridge.trade',
+      {
+        moq: 1,
+        leadDays: 75,
+        samplePrice: 120,
+        sampleDays: 12,
+        note: 'Strike-off 60 × 60 cm in your Pantone colours before production. GoodWeave certified.',
+        status: 'sample_requested',
+      },
+      [[hotel.items[0]!, 1380]],
+      daysAgo(10),
+    );
+    await addOffer(
+      hotel.id,
+      'vendor.in@himbridge.trade',
+      { moq: 12, leadDays: 40, samplePrice: 95, sampleDays: 8, note: 'UKCA-marked fittings; finish sample plate sent free.' },
+      [[hotel.items[1]!, 78]],
+      daysAgo(9),
+    );
+    await addOffer(
+      hotel.id,
+      'jodhpur@himbridge.trade',
+      { moq: 10, leadDays: 45, note: 'Kiln-dried sheesham, FSC available at +6%.' },
+      [[hotel.items[2]!, 112]],
+      daysAgo(8),
+    );
+    await tx.insert(sourcingMessage).values({
+      requestId: hotel.id,
+      authorId: admin,
+      body: 'Rug strike-off is on the loom. All three makers will ship in one consolidated LCL from Mundra to Felixstowe.',
+      createdAt: daysAgo(6),
+    });
+
+    await addRequest(
+      {
+        buyerId: brand,
+        kind: 'manufacture',
+        niche: 'spices',
+        title: 'Spice discovery gift box (6 spices)',
+        brief: 'Gift box for our holiday range: 6 single-origin spices in compostable tins, our branding.',
+        destination: 'Sydney, Australia',
+        shipping: 'air',
+        terms: 'DDP',
+        reorder: 'seasonal',
+        samplesNeeded: true,
+        privateLabel: true,
+        customPackaging: true,
+        stage: 'submitted',
+        createdAt: daysAgo(1),
+      },
+      [
+        {
+          name: 'Gift box with 6 spice tins (50 g each)',
+          spec: 'Turmeric, cardamom, black pepper, cinnamon, cumin, Kashmiri chilli. Australian import labelling.',
+          quantity: 1000,
+          unit: 'pcs',
+          currentPrice: 11,
+          targetPrice: 7.5,
+          retailPrice: 29,
+        },
+      ],
+    );
+
+    // ── Export readiness & services demo ───────────────────────
+    const ready = (email: string, done: string[], inProgress: string[] = []) =>
+      tx
+        .insert(vendorCompliance)
+        .values([
+          ...done.map((itemKey) => ({ vendorId: vid[email]!, itemKey, status: 'done' as const })),
+          ...inProgress.map((itemKey) => ({ vendorId: vid[email]!, itemKey, status: 'in_progress' as const })),
+        ]);
+    const licences = ['gst', 'udyam', 'bank', 'iec', 'lut', 'ad_code', 'icegate', 'rcmc', 'ecoo'];
+    await ready('vendor.in@himbridge.trade', [...licences, 'phyto', 'ispm15', 'social_audit']);
+    await ready('panipat@himbridge.trade', [...licences, 'phyto', 'ispm15', 'product_cert']);
+    await ready(
+      'spices@himbridge.trade',
+      ['gst', 'udyam', 'bank', 'iec', 'ad_code', 'icegate', 'fssai', 'commodity_board', 'phyto'],
+      ['lut', 'us_fda'],
+    );
+    await ready('assam@himbridge.trade', ['gst', 'bank'], ['iec']);
+    await tx.insert(serviceRequest).values([
+      {
+        userId: vid['assam@himbridge.trade']!,
+        service: 'export_start',
+        note: 'First-time exporter. Need IEC, LUT and Tea Board registration before the spring flush.',
+        createdAt: daysAgo(2),
+      },
+      {
+        userId: brand,
+        service: 'sample_consolidation',
+        note: 'Please combine samples from both cushion makers.',
+        status: 'in_progress',
+        createdAt: daysAgo(3),
       },
     ]);
   });

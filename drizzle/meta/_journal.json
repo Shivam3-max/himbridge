@@ -15,6 +15,13 @@
       "when": 1795681992332,
       "tag": "0001_india_only",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795808544947,
+      "tag": "0002_sourcing_desk",
+      "breakpoints": true
     }
   ]
 }

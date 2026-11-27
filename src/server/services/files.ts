@@ -4,7 +4,7 @@ import { and, asc, count, eq, inArray } from 'drizzle-orm';
 import { detectType, MAX_FILE_BYTES, MAX_PRODUCT_PHOTOS, safeFileName, UPLOAD_TYPES, type FileKind } from '@/domain/files';
 import type { CurrentUser } from '../auth/session';
 import { db } from '../db/client';
-import { file, product, rfq } from '../db/schema';
+import { file, product, rfq, sourcingRequest } from '../db/schema';
 import { AppError, notFound } from '../errors';
 import { storage } from '../storage';
 import { findOrderFor } from './orders';
@@ -41,6 +41,18 @@ async function canAttach(viewer: CurrentUser, kind: FileKind, refId: number | nu
         refId != null &&
         !!(await db.query.rfq.findFirst({ where: and(eq(rfq.id, refId), eq(rfq.buyerId, viewer.id)), columns: { id: true } }))
       );
+    case 'sourcing':
+      return (
+        (viewer.role === 'buyer' || viewer.role === 'admin') &&
+        refId != null &&
+        !!(await db.query.sourcingRequest.findFirst({
+          where:
+            viewer.role === 'admin'
+              ? eq(sourcingRequest.id, refId)
+              : and(eq(sourcingRequest.id, refId), eq(sourcingRequest.buyerId, viewer.id)),
+          columns: { id: true },
+        }))
+      );
   }
 }
 
@@ -50,7 +62,7 @@ async function canRead(viewer: CurrentUser | null, f: typeof file.$inferSelect) 
   if (!viewer) return false;
   if (viewer.role === 'admin' || f.ownerId === viewer.id) return true;
   if ((f.kind === 'qc' || f.kind === 'shipping') && f.refId != null) return !!(await findOrderFor(viewer, f.refId));
-  if (f.kind === 'rfq') return viewer.role === 'vendor'; // reference images are shared with quoting vendors
+  if (f.kind === 'rfq' || f.kind === 'sourcing') return viewer.role === 'vendor'; // reference files are shared with quoting vendors
   return false;
 }
 

@@ -20,6 +20,7 @@ export interface CurrentUser {
   company: string;
   country: string;
   phone: string;
+  buyerType: string;
   vendor: VendorProfile | null;
 }
 
@@ -38,6 +39,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
     company: row.company,
     country: row.country,
     phone: row.phone,
+    buyerType: row.buyerType,
     vendor: row.vendorProfile ?? null,
   };
 });

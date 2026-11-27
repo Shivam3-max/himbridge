@@ -93,6 +93,14 @@ Future roles: **QC inspector**, **trade-finance partner**, **country agent/sourc
 8. **Trade tools** — landed-cost/duty calculator, HS code finder, Incoterms guide, export document checklist.
 9. **Notices & announcements** — admin-published circulars (trade fairs, policy changes, new niches).
 10. **Admin control room** — KPIs, vendor approval queue, user list, all orders, logistics assignment.
+11. **Sourcing desk (small & mid buyers)** — landing pages per buyer type (brands, designers, importers); a four-step
+    sourcing request with product links, current / target / selling prices, quantities, delivery terms, samples and
+    private label; itemised offers from makers in the same sector, compared on saving vs. today and margin; samples;
+    one-click production order (50/50 payments for trade-size orders); message thread with the Himbridge desk.
+12. **Export readiness** — per-sector checklist for manufacturers (IEC, LUT, AD code, ICEGATE, RCMC, eCoO, FSSAI,
+    commodity boards, US FDA, phytosanitary, ISPM-15, lab tests, certifications) with where to apply, fee, time,
+    validity, renewal date and a readiness score; public programme page; service requests for vendors and buyers.
+13. **Buyer types** — brand / designer / importer chosen at sign-up; tailors the dashboard (next steps, quick starts).
 
 Later modules: escrow/payment milestones (LC, advance + balance), sample orders, trade-fair calendar, multilingual (EN/HI/ZH/AR), WhatsApp/email notifications, CRM sync, inspection booking, credit insurance (ECGC), analytics.
 
@@ -143,7 +151,10 @@ Later modules: escrow/payment milestones (LC, advance + balance), sample orders,
 | Role                 | Email                     |
 | -------------------- | ------------------------- |
 | Admin                | admin@himbridge.trade     |
-| Buyer                | buyer@himbridge.trade     |
+| Buyer (importer)     | buyer@himbridge.trade     |
+| Buyer (brand)        | brand@himbridge.trade     |
+| Buyer (designer)     | designer@himbridge.trade  |
+| Vendor (Textiles)    | panipat@himbridge.trade   |
 | Vendor (Handicrafts) | vendor.in@himbridge.trade |
 | Vendor (Spices)      | spices@himbridge.trade    |
 | Logistics            | logistics@himbridge.trade |
@@ -157,5 +168,6 @@ Later modules: escrow/payment milestones (LC, advance + balance), sample orders,
 | ✅ S1 (this build) | Portal, niches, catalog, login/registration, 4 role dashboards, RFQ → quote → order → shipment flow, tracking, trade tools |
 | ✅ S2              | File uploads (KYC, product photos, QC & shipping docs), email verification, password reset, change password                |
 | ✅ S3              | Milestone payments (advance/balance), printable proforma / commercial invoice / packing list, animated world network map   |
-| S4                 | Real email provider + payment/escrow gateway, full-page translations, WhatsApp notifications, mobile app                   |
-| S5                 | Analytics, CRM sync, trade-fair module, private-label store                                                                |
+| ✅ S4              | Sourcing desk for brands & designers, offer comparison, samples, export readiness checklist, services, dropdown navigation |
+| S5                 | Real email provider + payment/escrow gateway, full-page translations, WhatsApp notifications, mobile app                   |
+| S6                 | Analytics, CRM sync, trade-fair module, private-label store                                                                |

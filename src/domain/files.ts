@@ -1,5 +1,5 @@
 /** Uploaded file kinds and the rules every upload must pass. */
-export const FILE_KINDS = ['kyc', 'product', 'qc', 'shipping', 'rfq'] as const;
+export const FILE_KINDS = ['kyc', 'product', 'qc', 'shipping', 'rfq', 'sourcing'] as const;
 export type FileKind = (typeof FILE_KINDS)[number];
 
 export const MAX_FILE_BYTES = 5 * 1024 * 1024;

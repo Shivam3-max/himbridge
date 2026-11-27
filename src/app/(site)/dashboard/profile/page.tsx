@@ -1,3 +1,4 @@
+import { BuyerTypePicker } from '@/components/account/buyer-type-picker';
 import { FileList, UploadForm } from '@/components/dashboard/files';
 import { ChangePasswordForm } from '@/components/dashboard/trade-forms';
 import { VerifyEmailBanner } from '@/components/dashboard/verify-banner';
@@ -59,6 +60,14 @@ export default async function ProfilePage() {
           </div>
         </div>
       </Block>
+      {me.role === 'buyer' && (
+        <Block title={t('What kind of buyer are you?')} style={{ marginBottom: 16 }}>
+          <p className="small muted" style={{ marginTop: 0 }}>
+            {t('This tailors your dashboard, suggested order sizes and shipping options.')}
+          </p>
+          <BuyerTypePicker current={me.buyerType} />
+        </Block>
+      )}
       {v && (
         <Block title={t('KYC & certification documents')} tone="saffron" style={{ marginBottom: 16 }}>
           <p className="small muted" style={{ marginTop: 0 }}>

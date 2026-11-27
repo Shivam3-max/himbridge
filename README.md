@@ -1,7 +1,9 @@
 # Himbridge Global Trade Portal
 
-Verified sourcing → export worldwide. A B2B portal where international buyers post RFQs, verified manufacturers quote,
-and Himbridge runs orders through milestone payments, QC, export documents and door-to-door logistics.
+Made in India, delivered to the world. A B2B sourcing ecosystem for Indian manufacturers and overseas buyers of every
+size: e-commerce brands and designers start a guided sourcing request (from 50 pieces, samples first), importers post
+bulk RFQs, and Himbridge runs orders through milestone payments, QC, export documents and door-to-door logistics.
+Manufacturers get an export readiness checklist and services to become export-ready.
 
 See [docs/BLUEPRINT.md](docs/BLUEPRINT.md) for the business plan (categories, ecosystem, revenue, go-to-market).
 
@@ -38,7 +40,9 @@ npm run dev                   #             http://localhost:3000
 Already have PostgreSQL (or Docker)? Skip `db:local` and point `DATABASE_URL` in `.env` at your database.
 
 **Demo logins** (password `Himbridge@123`, demo data only; never seed production):
-admin@himbridge.trade · buyer@himbridge.trade · omar@gulfliving.ae · vendor.in@himbridge.trade (handicrafts) ·
+admin@himbridge.trade · brand@himbridge.trade (e-commerce brand) · designer@himbridge.trade (interior designer) ·
+buyer@himbridge.trade · omar@gulfliving.ae (importers) · vendor.in@himbridge.trade (handicrafts) ·
+panipat@himbridge.trade (home textiles) · varanasi@himbridge.trade (silk) · assam@himbridge.trade (pending, new exporter) ·
 spices@himbridge.trade (spices) · karnal@himbridge.trade (basmati) · kerala@himbridge.trade (pending vendor) · logistics@himbridge.trade
 
 ## Scripts
@@ -59,11 +63,21 @@ spices@himbridge.trade (spices) · karnal@himbridge.trade (basmati) · kerala@hi
 
 - **Public site:** home with live trade-network map, marketplace (four sectors of Indian-made products), category research,
   verified vendor directory, shipment tracking, trade tools (landed cost, HS codes, Incoterms, export checklist), about.
-- **Accounts:** buyers, vendors (with KYC upload and verification) and logistics partners; email verification;
+- **Source from India (small & mid buyers):** landing pages for brands, designers and importers (`/solutions/*`); a
+  four-step sourcing request (product links, current / target / selling price, quantities, delivery terms, samples,
+  private label); itemised offers from makers in the same sector, compared against the buyer's current and target
+  price with savings and margin; samples; one-click production order; a message thread with the sourcing desk;
+  suggested order size (trade / mid / volume) and shipping mode (courier / air / LCL / FCL).
+- **Manufacturers:** export readiness checklist per sector (IEC, LUT, AD code, RCMC, FSSAI, FDA, certifications…) with
+  where to apply, fees, timelines and renewal dates; a public Export Readiness Programme page; service requests
+  (Export Start, Sector Ready, Certify, catalogue, shipment desk, training). Buyers can request samples consolidation,
+  inspection, factory visits, design help and DDP shipping.
+- **Accounts:** buyers (brand / designer / importer, which tailors their dashboard), vendors (with KYC upload and verification) and logistics partners; email verification;
   forgot / reset / change password. Admins are created by the team, never by sign-up.
 - **Trade flow:** RFQ → quotes → accept → order with milestones (confirmed → in production → QC passed → shipped →
   customs → delivered). Each party can only move the milestones it owns.
-- **Payments:** 30% advance unlocks production, 70% balance after QC unlocks dispatch. Buyers submit a bank/LC
+- **Payments:** advance unlocks production (30%, or 50% for trade-size sourcing orders under ₹15 lakh), balance after
+  QC unlocks dispatch. Buyers can reorder any past order in two clicks. Buyers submit a bank/LC
   reference; admins confirm receipt.
 - **Documents:** printable proforma invoice, commercial invoice and packing list; uploads for KYC, product photos,
   RFQ references, QC reports and shipping documents (type-checked by file contents, permission-checked on download).

@@ -16,11 +16,14 @@ export function SidebarNav({ items }: { items: MenuItem[] }) {
     .find((i) => pathname === i.href || pathname.startsWith(`${i.href}/`))?.href;
   return (
     <nav aria-label={t('Dashboard')}>
-      {items.map((i) => (
-        <Link key={i.href} href={i.href} className={cx(active === i.href && 'active')}>
-          <span aria-hidden="true">{i.icon}</span>
-          {t(i.label)}
-        </Link>
+      {items.map((i, n) => (
+        <div key={i.href}>
+          {i.section && i.section !== items[n - 1]?.section && <div className="side-section">{t(i.section)}</div>}
+          <Link href={i.href} className={cx(active === i.href && 'active')}>
+            <span aria-hidden="true">{i.icon}</span>
+            {t(i.label)}
+          </Link>
+        </div>
       ))}
       <LogoutButton className="linkish side-logout">
         <span aria-hidden="true">⏻</span>

@@ -9,6 +9,7 @@ import { LOCALES } from '@/i18n/config';
 import { authClient } from '@/lib/auth-client';
 import { cx } from '@/lib/format';
 import { useStoredValue } from '@/lib/hooks';
+import type { NavItem } from './site-header';
 
 export function LanguageSelect() {
   const { locale, t } = useI18n();
@@ -54,13 +55,16 @@ export function FontSizeButtons() {
   );
 }
 
-export function MainNav({ items, children }: { items: [href: string, label: string][]; children: React.ReactNode }) {
+export function MainNav({ items, children }: { items: NavItem[]; children: React.ReactNode }) {
   const pathname = usePathname();
   const { t } = useI18n();
-  // The menu remembers which page it was opened on, so it closes by itself after navigation.
+  // Menus remember which page they were opened on, so they close by themselves after navigation.
   const [openOn, setOpenOn] = useState<string | null>(null);
+  const [subOn, setSubOn] = useState<{ path: string; href: string } | null>(null);
   const open = openOn === pathname;
-  const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname === href);
+  const openSub = subOn?.path === pathname ? subOn.href : null;
+  const isActive = (i: NavItem) =>
+    i.href === '/' ? pathname === '/' : pathname === i.href || !!i.children?.some(([h]) => h.split('#')[0] === pathname);
   return (
     <nav className={cx('nav', open && 'open')} aria-label={t('Main')}>
       <div className="wrap">
@@ -74,11 +78,36 @@ export function MainNav({ items, children }: { items: [href: string, label: stri
           ☰
         </button>
         <ul>
-          {items.map(([href, label]) => (
-            <li key={href}>
-              <Link href={href} className={cx(isActive(href) && 'active')}>
-                {t(label)}
-              </Link>
+          {items.map((i) => (
+            <li
+              key={i.href + i.label}
+              className={cx(i.children && 'has-sub', openSub === i.href && 'sub-open')}
+              onMouseLeave={() => openSub === i.href && setSubOn(null)}
+            >
+              {i.children ? (
+                <>
+                  <button
+                    type="button"
+                    className={cx(isActive(i) && 'active')}
+                    aria-expanded={openSub === i.href}
+                    onClick={() => setSubOn(openSub === i.href ? null : { path: pathname, href: i.href })}
+                  >
+                    {t(i.label)} <span aria-hidden="true">▾</span>
+                  </button>
+                  <div className="sub">
+                    {i.children.map(([href, label, sub]) => (
+                      <Link key={href + label} href={href}>
+                        <b>{t(label)}</b>
+                        <span>{t(sub)}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <Link href={i.href} className={cx(isActive(i) && 'active')}>
+                  {t(i.label)}
+                </Link>
+              )}
             </li>
           ))}
         </ul>

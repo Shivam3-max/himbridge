@@ -12,6 +12,8 @@ import { user, vendorProfile } from '@/server/db/schema';
 import { AppError } from '@/server/errors';
 import { uploadFiles } from '@/server/services/files';
 import { ORIGIN_COUNTRY } from '@/domain/sectors';
+import { isBuyerType } from '@/domain/sourcing';
+import { requireUser } from '@/server/auth/session';
 
 /**
  * Creates an account. Sign-up is only possible through this action (the raw HTTP endpoint is disabled),
@@ -32,6 +34,7 @@ export async function register(_prev: ActionResult | null, formData: FormData): 
         company: input.company,
         country: input.role === 'vendor' ? ORIGIN_COUNTRY : input.country,
         phone: input.phone,
+        buyerType: input.role === 'buyer' ? (input.buyerType ?? 'importer') : '',
         callbackURL: '/verify-email',
       },
       headers: await headers(),
@@ -65,6 +68,7 @@ export async function register(_prev: ActionResult | null, formData: FormData): 
           company: input.company,
           country: input.role === 'vendor' ? ORIGIN_COUNTRY : input.country,
           phone: input.phone,
+          buyerType: '',
           vendor: null,
         };
         // KYC upload failures must not undo a successful registration; documents can be added later.
@@ -80,4 +84,16 @@ export async function register(_prev: ActionResult | null, formData: FormData): 
 export async function setLocale(locale: string) {
   if (!isLocale(locale)) return;
   (await cookies()).set(LOCALE_COOKIE, locale, { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
+}
+
+/** Buyers can switch their buyer type (brand / designer / importer); it tailors their dashboard. */
+export async function setBuyerType(type: string): Promise<ActionResult> {
+  return runAction(
+    async () => {
+      const me = await requireUser('buyer');
+      if (!isBuyerType(type)) throw new AppError('Unknown buyer type');
+      await db.update(user).set({ buyerType: type }).where(eq(user.id, me.id));
+    },
+    { revalidate: ['/dashboard'], message: 'Saved' },
+  );
 }

@@ -6,7 +6,7 @@ export const SELF_SERVICE_ROLES = ['buyer', 'vendor', 'logistics'] as const;
 export type SelfServiceRole = (typeof SELF_SERVICE_ROLES)[number];
 
 export const ROLE_LABEL: Record<Role, string> = {
-  buyer: 'Buyer / Importer',
+  buyer: 'Buyer',
   vendor: 'Manufacturer / Vendor',
   logistics: 'Logistics Partner',
   admin: 'Himbridge Administrator',

@@ -16,6 +16,7 @@ import { SECTORS, SECTOR_KEYS, sectorOf, type SectorKey } from '@/domain/sectors
 import { ACCEPT_IMAGES } from '@/domain/files';
 import { NICHES } from '@/domain/niches';
 import { UNITS } from '@/domain/trade-reference';
+import { INCOTERMS } from '@/domain/order-flow';
 import { useT } from '@/i18n/client';
 import { authClient } from '@/lib/auth-client';
 import { usd } from '@/lib/format';
@@ -45,7 +46,11 @@ const Req = () => <span className="req">*</span>;
 
 // ── Buyer ────────────────────────────────────────────────────
 
-export function PostRfqForm({ defaults }: { defaults: { title?: string; niche?: string; destination?: string } }) {
+export function PostRfqForm({
+  defaults,
+}: {
+  defaults: { title?: string; niche?: string; destination?: string; quantity?: number; unit?: string };
+}) {
   const t = useT();
   const router = useRouter();
   const f = useFormAction(createRfq, { onSuccess: () => router.push('/dashboard/rfqs') });
@@ -72,11 +77,11 @@ export function PostRfqForm({ defaults }: { defaults: { title?: string; niche?: 
           <label>
             {t('Quantity')} <Req />
           </label>
-          <input name="quantity" type="number" min="1" />
+          <input name="quantity" type="number" min="1" defaultValue={defaults.quantity} />
         </div>
         <div className="field">
           <label>{t('Unit')}</label>
-          <select name="unit">
+          <select name="unit" defaultValue={defaults.unit ?? 'pcs'}>
             {UNITS.map((u) => (
               <option key={u}>{u}</option>
             ))}
@@ -91,6 +96,23 @@ export function PostRfqForm({ defaults }: { defaults: { title?: string; niche?: 
         <div className="field">
           <label>{t('Target unit price (USD)')}</label>
           <input name="targetPrice" type="number" step="0.01" min="0" />
+        </div>
+        <div className="field">
+          <label>{t('Incoterm')}</label>
+          <select name="incoterm" defaultValue="FOB">
+            {INCOTERMS.map((i) => (
+              <option key={i}>{i}</option>
+            ))}
+          </select>
+        </div>
+        <div className="field">
+          <label>{t('Delivery needed by')}</label>
+          <input name="deliverBy" type="date" />
+        </div>
+        <div className="field">
+          <label className="check" style={{ marginTop: 22 }}>
+            <input type="checkbox" name="samplesNeeded" /> {t('I need pre-production samples')}
+          </label>
         </div>
         <div className="field full">
           <label>{t('Specifications')}</label>

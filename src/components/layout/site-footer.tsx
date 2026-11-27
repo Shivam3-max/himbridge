@@ -7,6 +7,10 @@ const COLUMNS: [title: string, links: [href: string, label: string][]][] = [
   [
     'For Buyers',
     [
+      ['/solutions/brands', 'For e-commerce brands'],
+      ['/solutions/designers', 'For architects & designers'],
+      ['/solutions/importers', 'For importers'],
+      ['/dashboard/sourcing/new', 'Start a sourcing request'],
       ['/marketplace', 'Browse marketplace'],
       ['/dashboard/rfqs/new', 'Post an RFQ'],
       ['/track', 'Track shipment'],
@@ -18,6 +22,7 @@ const COLUMNS: [title: string, links: [href: string, label: string][]][] = [
     'For Vendors',
     [
       ['/register?role=vendor', 'Vendor registration'],
+      ['/export-ready', 'Export Readiness Programme'],
       ['/niches', 'Niche opportunities'],
       ['/tools#docs', 'Export documents'],
       ['/about#verification', 'Verification process'],

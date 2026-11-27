@@ -71,7 +71,14 @@ export function OrderCard({ order: o, viewer, partners = [] }: { order: OrderDet
             {t('Created')} {fmtDate(o.createdAt)}
           </div>
         </div>
-        <StatusBadge status={o.status} />
+        <div className="row-inline">
+          {viewer.role === 'buyer' && (
+            <a className="btn sm ghost" href={reorderHref(o)} title={t('Start a new order with the same details')}>
+              ↻ {t('Reorder')}
+            </a>
+          )}
+          <StatusBadge status={o.status} />
+        </div>
       </header>
       <div className="body">
         <div className="kv" style={{ marginBottom: 12 }}>
@@ -125,6 +132,22 @@ export function OrderCard({ order: o, viewer, partners = [] }: { order: OrderDet
       </div>
     </div>
   );
+}
+
+/** Pre-filled form for ordering the same goods again (sourcing request or bulk RFQ, like the original). */
+function reorderHref(o: OrderDetail) {
+  const q = new URLSearchParams({
+    title: o.title.replace(/ \(\d+ items\)$/, ''),
+    niche: o.vendorNiche ?? '',
+    qty: String(o.quantity),
+    unit: o.unit,
+  });
+  if (o.sourcingId) {
+    q.set('kind', 'source');
+    q.set('item', o.title);
+    return `/dashboard/sourcing/new?${q}`;
+  }
+  return `/dashboard/rfqs/new?${q}`;
 }
 
 function MilestoneForm({ orderId, next }: { orderId: number; next: string }) {

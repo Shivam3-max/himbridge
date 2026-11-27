@@ -6,15 +6,55 @@ import { listNotices } from '@/server/services/admin';
 import { LogoMark } from '../brand/logo';
 import { FontSizeButtons, LanguageSelect, LogoutButton, MainNav } from './header-controls';
 
-export const NAV: [string, string][] = [
-  ['/', 'Home'],
-  ['/marketplace', 'Marketplace'],
-  ['/niches', 'Niches & Research'],
-  ['/vendors', 'Vendor Directory'],
-  ['/dashboard/rfqs/new', 'Post RFQ'],
-  ['/track', 'Track Shipment'],
-  ['/tools', 'Trade Tools'],
-  ['/about', 'About Himbridge'],
+export interface NavItem {
+  href: string;
+  label: string;
+  /** Dropdown entries: [href, label, one-line description]. */
+  children?: [href: string, label: string, sub: string][];
+}
+
+export const NAV: NavItem[] = [
+  { href: '/', label: 'Home' },
+  {
+    href: '/solutions/brands',
+    label: 'Source from India',
+    children: [
+      ['/solutions/brands', 'E-commerce & D2C brands', 'Small batches, private label, samples first'],
+      ['/solutions/designers', 'Architects & interior designers', 'Custom pieces for your projects'],
+      ['/solutions/importers', 'Importers & distributors', 'Container orders, inspected and shipped'],
+      ['/dashboard/sourcing/new', 'Start a sourcing request', 'Tell us what you need, get matched offers'],
+    ],
+  },
+  {
+    href: '/marketplace',
+    label: 'Marketplace',
+    children: [
+      ['/marketplace', 'Browse products', 'Live catalogue from verified makers'],
+      ['/niches', 'Sectors & research', '16 Indian export categories'],
+      ['/vendors', 'Verified manufacturers', 'KYC-checked factories and workshops'],
+      ['/dashboard/rfqs/new', 'Post a bulk RFQ', 'Quotes from several exporters in 48 hours'],
+    ],
+  },
+  {
+    href: '/export-ready',
+    label: 'For Manufacturers',
+    children: [
+      ['/register?role=vendor', 'Sell worldwide', 'Register your factory or workshop'],
+      ['/export-ready', 'Export Readiness Programme', 'Licences, compliance and training'],
+      ['/tools#docs', 'Export documents', 'Checklist by sector'],
+    ],
+  },
+  {
+    href: '/tools',
+    label: 'Tools',
+    children: [
+      ['/tools#landed', 'Landed cost calculator', 'Duty, freight and fees for your market'],
+      ['/tools#hs', 'HS code finder', 'Classify Indian products'],
+      ['/tools#incoterms', 'Incoterms guide', 'Who pays for what'],
+      ['/track', 'Track shipment', 'Live order milestones'],
+    ],
+  },
+  { href: '/about', label: 'About' },
 ];
 
 export async function SiteHeader() {

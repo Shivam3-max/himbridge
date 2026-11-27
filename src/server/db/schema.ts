@@ -1,5 +1,18 @@
 import { relations, sql } from 'drizzle-orm';
-import { boolean, check, index, integer, numeric, pgTable, serial, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  check,
+  date,
+  index,
+  integer,
+  numeric,
+  pgTable,
+  primaryKey,
+  serial,
+  text,
+  timestamp,
+  uniqueIndex,
+} from 'drizzle-orm/pg-core';
 
 const createdAt = () => timestamp('created_at', { withTimezone: true }).defaultNow().notNull();
 const updatedAt = () =>
@@ -29,6 +42,8 @@ export const user = pgTable(
     company: text('company').notNull().default(''),
     country: text('country').notNull().default(''),
     phone: text('phone').notNull().default(''),
+    /** Buyers only: brand / designer / importer (see src/domain/sourcing.ts). Empty for other roles. */
+    buyerType: text('buyer_type').notNull().default(''),
     /** "active" accounts can sign in; "disabled" accounts are blocked. */
     status: text('status', { enum: ['active', 'disabled'] })
       .notNull()
@@ -160,6 +175,9 @@ export const rfq = pgTable(
     unit: text('unit').notNull().default('pcs'),
     destination: text('destination').notNull(),
     targetPrice: money('target_price'),
+    incoterm: text('incoterm').notNull().default('FOB'),
+    deliverBy: date('deliver_by', { mode: 'string' }),
+    samplesNeeded: boolean('samples_needed').notNull().default(false),
     status: text('status', { enum: ['open', 'awarded', 'closed'] })
       .notNull()
       .default('open'),
@@ -198,6 +216,7 @@ export const order = pgTable(
     code: text('code').unique(),
     rfqId: integer('rfq_id').references(() => rfq.id, { onDelete: 'set null' }),
     quoteId: integer('quote_id').references(() => quote.id, { onDelete: 'set null' }),
+    sourcingId: integer('sourcing_id').references(() => sourcingRequest.id, { onDelete: 'set null' }),
     buyerId: text('buyer_id')
       .notNull()
       .references(() => user.id),
@@ -277,7 +296,7 @@ export const file = pgTable(
     ownerId: text('owner_id')
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
-    kind: text('kind', { enum: ['kyc', 'product', 'qc', 'shipping', 'rfq'] }).notNull(),
+    kind: text('kind', { enum: ['kyc', 'product', 'qc', 'shipping', 'rfq', 'sourcing'] }).notNull(),
     refId: integer('ref_id'),
     label: text('label').notNull().default(''),
     name: text('name').notNull(),
@@ -301,6 +320,152 @@ export const emailOutbox = pgTable('email_outbox', {
   error: text('error'),
   createdAt: createdAt(),
 });
+
+// ─────────────────────────────────────────────────────────────
+// Sourcing desk (small brands, designers, importers) — see src/domain/sourcing.ts
+// ─────────────────────────────────────────────────────────────
+
+export const sourcingRequest = pgTable(
+  'sourcing_request',
+  {
+    id: serial('id').primaryKey(),
+    code: text('code').unique(),
+    buyerId: text('buyer_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    kind: text('kind', { enum: ['source', 'manufacture', 'project'] }).notNull(),
+    niche: text('niche').notNull(),
+    title: text('title').notNull(),
+    brief: text('brief').notNull().default(''),
+    storeUrl: text('store_url').notNull().default(''),
+    destination: text('destination').notNull(),
+    deliverBy: date('deliver_by', { mode: 'string' }),
+    shipping: text('shipping').notNull().default('advise'),
+    terms: text('terms').notNull().default('DDP'),
+    reorder: text('reorder').notNull().default('one_off'),
+    samplesNeeded: boolean('samples_needed').notNull().default(true),
+    privateLabel: boolean('private_label').notNull().default(false),
+    customPackaging: boolean('custom_packaging').notNull().default(false),
+    stage: text('stage', { enum: ['submitted', 'matching', 'offers', 'sampling', 'ordered', 'closed'] })
+      .notNull()
+      .default('submitted'),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index('sourcing_buyer_idx').on(t.buyerId), index('sourcing_stage_idx').on(t.stage)],
+);
+
+export const sourcingItem = pgTable(
+  'sourcing_item',
+  {
+    id: serial('id').primaryKey(),
+    requestId: integer('request_id')
+      .notNull()
+      .references(() => sourcingRequest.id, { onDelete: 'cascade' }),
+    position: integer('position').notNull().default(0),
+    name: text('name').notNull(),
+    spec: text('spec').notNull().default(''),
+    referenceUrl: text('reference_url').notNull().default(''),
+    quantity: integer('quantity').notNull(),
+    unit: text('unit').notNull().default('pcs'),
+    currentPrice: money('current_price'),
+    targetPrice: money('target_price'),
+    retailPrice: money('retail_price'),
+  },
+  (t) => [index('sourcing_item_req_idx').on(t.requestId)],
+);
+
+export const sourcingOffer = pgTable(
+  'sourcing_offer',
+  {
+    id: serial('id').primaryKey(),
+    requestId: integer('request_id')
+      .notNull()
+      .references(() => sourcingRequest.id, { onDelete: 'cascade' }),
+    vendorId: text('vendor_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    moq: integer('moq').notNull(),
+    leadDays: integer('lead_days').notNull(),
+    samplePrice: money('sample_price'),
+    sampleDays: integer('sample_days'),
+    note: text('note').notNull().default(''),
+    status: text('status', { enum: ['submitted', 'sample_requested', 'accepted', 'declined'] })
+      .notNull()
+      .default('submitted'),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [uniqueIndex('sourcing_offer_req_vendor_uq').on(t.requestId, t.vendorId)],
+);
+
+export const sourcingOfferLine = pgTable(
+  'sourcing_offer_line',
+  {
+    offerId: integer('offer_id')
+      .notNull()
+      .references(() => sourcingOffer.id, { onDelete: 'cascade' }),
+    itemId: integer('item_id')
+      .notNull()
+      .references(() => sourcingItem.id, { onDelete: 'cascade' }),
+    unitPrice: money('unit_price').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.offerId, t.itemId] })],
+);
+
+/** Conversation between the buyer and the Himbridge sourcing desk on one request. */
+export const sourcingMessage = pgTable(
+  'sourcing_message',
+  {
+    id: serial('id').primaryKey(),
+    requestId: integer('request_id')
+      .notNull()
+      .references(() => sourcingRequest.id, { onDelete: 'cascade' }),
+    authorId: text('author_id').references(() => user.id, { onDelete: 'set null' }),
+    body: text('body').notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index('sourcing_message_req_idx').on(t.requestId)],
+);
+
+// ─────────────────────────────────────────────────────────────
+// Export readiness & services — see src/domain/export-readiness.ts
+// ─────────────────────────────────────────────────────────────
+
+export const vendorCompliance = pgTable(
+  'vendor_compliance',
+  {
+    vendorId: text('vendor_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    itemKey: text('item_key').notNull(),
+    status: text('status', { enum: ['missing', 'in_progress', 'done', 'na'] })
+      .notNull()
+      .default('missing'),
+    reference: text('reference').notNull().default(''),
+    expiresOn: date('expires_on', { mode: 'string' }),
+    updatedAt: updatedAt(),
+  },
+  (t) => [primaryKey({ columns: [t.vendorId, t.itemKey] })],
+);
+
+export const serviceRequest = pgTable(
+  'service_request',
+  {
+    id: serial('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    service: text('service').notNull(),
+    note: text('note').notNull().default(''),
+    status: text('status', { enum: ['new', 'in_progress', 'done', 'cancelled'] })
+      .notNull()
+      .default('new'),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index('service_request_user_idx').on(t.userId), index('service_request_status_idx').on(t.status)],
+);
 
 // ─────────────────────────────────────────────────────────────
 // Relations (for typed relational queries)

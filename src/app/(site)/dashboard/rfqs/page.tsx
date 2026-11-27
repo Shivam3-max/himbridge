@@ -51,6 +51,15 @@ export default async function RfqsPage() {
             {t('Target')} <b>{r.targetPrice ? usd(r.targetPrice) : '—'}</b>
           </span>
           <span>
+            {t('Incoterm')} <b>{r.incoterm}</b>
+          </span>
+          {r.deliverBy && (
+            <span>
+              {t('Needed by')} <b>{fmtDate(r.deliverBy)}</b>
+            </span>
+          )}
+          {r.samplesNeeded && <Badge tone="info">Samples first</Badge>}
+          <span>
             {t('Sector')} <SectorChip niche={r.niche} />
           </span>
         </div>
@@ -64,6 +73,7 @@ export default async function RfqsPage() {
                   <th>{t('Vendor')}</th>
                   <th>{t('Sector')}</th>
                   <th className="right">{t('Unit price')}</th>
+                  <th className="right">{t('vs target')}</th>
                   <th className="right">{t('Order value')}</th>
                   <th>{t('Lead time')}</th>
                   <th>{t('Note')}</th>
@@ -74,7 +84,13 @@ export default async function RfqsPage() {
                 {r.quotes.map((q) => (
                   <tr key={q.id}>
                     <td>
-                      <b>{q.vendorCompany}</b>
+                      <b>{q.vendorCompany}</b>{' '}
+                      {r.quotes.length > 1 && q.unitPrice === Math.min(...r.quotes.map((x) => x.unitPrice)) && (
+                        <Badge tone="ok">Best price</Badge>
+                      )}{' '}
+                      {r.quotes.length > 1 && q.leadDays === Math.min(...r.quotes.map((x) => x.leadDays)) && (
+                        <Badge tone="info">Fastest</Badge>
+                      )}
                       <br />
                       <span className="tiny muted">{q.certifications}</span>
                     </td>
@@ -82,6 +98,11 @@ export default async function RfqsPage() {
                       <SectorChip niche={q.vendorNiche} />
                     </td>
                     <td className="right">{usd(q.unitPrice)}</td>
+                    <td className="right small">
+                      {r.targetPrice
+                        ? `${q.unitPrice <= r.targetPrice ? '✓ ' : ''}${Math.round(((q.unitPrice - r.targetPrice) / r.targetPrice) * 1000) / 10}%`
+                        : '—'}
+                    </td>
                     <td className="right">{usd(q.unitPrice * r.quantity, 0)}</td>
                     <td>{t(`${q.leadDays} days`)}</td>
                     <td className="small">{q.note}</td>

@@ -55,6 +55,15 @@ export default async function InboxPage() {
                 {t('Target')} <b>{r.targetPrice ? usd(r.targetPrice) : t('Open')}</b>
               </span>
               <span>
+                {t('Incoterm')} <b>{r.incoterm}</b>
+              </span>
+              {r.deliverBy && (
+                <span>
+                  {t('Needed by')} <b>{fmtDate(r.deliverBy)}</b>
+                </span>
+              )}
+              {r.samplesNeeded && <span>{t('Samples first')}</span>}
+              <span>
                 {t('Quotes so far')} <b>{r.quoteCount}</b>
               </span>
             </div>

@@ -50,6 +50,7 @@ export const auth = betterAuth({
       company: { type: 'string', required: false, defaultValue: '', input: true },
       country: { type: 'string', required: false, defaultValue: '', input: true },
       phone: { type: 'string', required: false, defaultValue: '', input: true },
+      buyerType: { type: 'string', required: false, defaultValue: '', input: true },
       status: { type: 'string', required: false, defaultValue: 'active', input: false },
     },
   },

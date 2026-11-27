@@ -8,10 +8,12 @@ import { Dropzone, SubmitButton, useFormAction } from '@/components/ui/forms';
 import { FormMessage } from '@/components/ui/primitives';
 import { NicheOptions } from '@/components/dashboard/trade-forms';
 import type { SelfServiceRole } from '@/domain/roles';
+import { BuyerTypeCards } from '@/components/account/buyer-type-picker';
+import type { BuyerType } from '@/domain/sourcing';
 import { useT } from '@/i18n/client';
 
 const ROLES: [SelfServiceRole, string, string][] = [
-  ['buyer', 'Buyer / Importer', 'Source products and post RFQs'],
+  ['buyer', 'Buyer', 'Brands, designers, retailers and importers'],
   ['vendor', 'Manufacturer / Vendor', 'Factory, workshop or exporter'],
   ['logistics', 'Logistics Partner', 'Freight forwarder, CHA, inspection'],
 ];
@@ -32,16 +34,25 @@ const COUNTRIES = [
   'Singapore',
 ];
 
-export function RegisterForm({ initialRole }: { initialRole: SelfServiceRole }) {
+export function RegisterForm({
+  initialRole,
+  initialBuyerType,
+  next,
+}: {
+  initialRole: SelfServiceRole;
+  initialBuyerType: BuyerType;
+  next?: string;
+}) {
   const t = useT();
   const router = useRouter();
   const [role, setRole] = useState<SelfServiceRole>(initialRole);
   const [country, setCountry] = useState('');
+  const [buyerType, setBuyerType] = useState<string>(initialBuyerType);
   const f = useFormAction(register, {
     reset: false,
     validate: (fd) => (fd.get('agree') ? null : 'Please accept the Terms of Use to continue.'),
     onSuccess: () => {
-      router.push('/dashboard?welcome=1');
+      router.push(next ?? '/dashboard?welcome=1');
       router.refresh();
     },
   });
@@ -77,6 +88,13 @@ export function RegisterForm({ initialRole }: { initialRole: SelfServiceRole }) 
             </label>
           ))}
         </div>
+
+        {role === 'buyer' && (
+          <>
+            <h3 style={{ marginTop: 6 }}>{t('What best describes your business?')}</h3>
+            <BuyerTypeCards name="buyerType" value={buyerType} onChange={setBuyerType} />
+          </>
+        )}
 
         <h3 style={{ marginTop: 6 }}>{t('1. Contact & company')}</h3>
         <div className="grid-form">
