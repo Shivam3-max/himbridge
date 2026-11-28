@@ -3809,3 +3809,123 @@ a.service-card:hover {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Home: browse by category, one card per sector */
+.sector-showcase {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  align-items: stretch;
+}
+.sector-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.sector-head {
+  position: relative;
+  display: block;
+  height: 120px;
+  overflow: hidden;
+  background: var(--navy);
+}
+.sector-head img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+.sector-head:hover img {
+  transform: scale(1.05);
+}
+.sector-head::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 22, 50, 0) 30%, rgba(6, 22, 50, 0.8));
+}
+.sector-head-text {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 10px;
+  z-index: 1;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+.sector-head-text b {
+  font-family: var(--font-head);
+  font-size: 1.1rem;
+}
+.sector-head-text small {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+.sector-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+.sector-card li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  color: var(--ink);
+  border-left: 3px solid transparent;
+}
+.sector-card li a:hover {
+  text-decoration: none;
+  background: var(--tint);
+  border-left-color: var(--c);
+}
+.sc-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--navy);
+  line-height: 1.25;
+}
+.sc-name small {
+  display: block;
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.sc-go {
+  color: var(--muted);
+  font-size: 1.2rem;
+}
+.sector-all {
+  margin-top: auto;
+  padding: 10px 14px;
+  border-top: 1px solid var(--line-2);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+@media (max-width: 1100px) {
+  .sector-showcase {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .sector-showcase {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* Category photo cards elsewhere: smaller, more columns */
+.cat-photo {
+  aspect-ratio: 16 / 10;
+}
+@media (max-width: 1100px) {
+  .cat-grid:not(.compact) {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}

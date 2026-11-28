@@ -28,24 +28,26 @@ export function CategoryGrid({
   const t = useT();
   return (
     <div className={cx('cat-grid', compact && 'compact')}>
-      {NICHES.filter((n) => !sector || n.sector === sector).map((n) => (
-        <Link
-          key={n.slug}
-          href={`${base}${n.slug}`}
-          className={cx('cat-tile', active === n.slug && 'on')}
-          style={{ '--c': n.color } as CSSProperties}
-          aria-current={active === n.slug ? 'true' : undefined}
-        >
-          {compact || !n.image ? (
-            <CategoryBadge niche={n.slug} size={compact ? 40 : 52} />
-          ) : (
-            // eslint-disable-next-line @next/next/no-img-element -- static category photo
-            <img className="cat-photo" src={n.image} alt="" loading="lazy" />
-          )}
-          <span className="cat-name">{t(n.name)}</span>
-          {counts && <span className="cat-count">{counts[n.slug] ? t(`${counts[n.slug]} products`) : t('Sourcing on request')}</span>}
-        </Link>
-      ))}
+      {SECTOR_KEYS.flatMap((k) => NICHES.filter((n) => n.sector === k))
+        .filter((n) => !sector || n.sector === sector)
+        .map((n) => (
+          <Link
+            key={n.slug}
+            href={`${base}${n.slug}`}
+            className={cx('cat-tile', active === n.slug && 'on')}
+            style={{ '--c': n.color } as CSSProperties}
+            aria-current={active === n.slug ? 'true' : undefined}
+          >
+            {compact || !n.image ? (
+              <CategoryBadge niche={n.slug} size={compact ? 40 : 52} />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element -- static category photo
+              <img className="cat-photo" src={n.image} alt="" loading="lazy" />
+            )}
+            <span className="cat-name">{t(n.name)}</span>
+            {counts && <span className="cat-count">{counts[n.slug] ? t(`${counts[n.slug]} products`) : t('Sourcing on request')}</span>}
+          </Link>
+        ))}
     </div>
   );
 }
@@ -88,6 +90,61 @@ export function CategoryPicker({
           </div>
         </fieldset>
       ))}
+    </div>
+  );
+}
+
+/** Header photo per sector (one of its categories). */
+const SECTOR_COVER: Record<SectorKey, string> = {
+  home: 'rugs',
+  food: 'spices',
+  fashion: 'handloom-silk',
+  wellness: 'incense-festive',
+};
+
+/**
+ * Home page "Browse by category": one card per sector with a header photo and its categories listed
+ * underneath (photo, name, live listings). Balanced at every width: 4 → 2 → 1 columns.
+ */
+export function SectorShowcase({ counts }: { counts: Record<string, number> }) {
+  const t = useT();
+  return (
+    <div className="sector-showcase">
+      {SECTOR_KEYS.map((k) => {
+        const niches = NICHES.filter((n) => n.sector === k);
+        const cover = NICHES.find((n) => n.slug === SECTOR_COVER[k])?.image;
+        return (
+          <section key={k} className="sector-card">
+            <Link href={`/marketplace?c=${k}`} className="sector-head">
+              {/* eslint-disable-next-line @next/next/no-img-element -- static category photo */}
+              {cover && <img src={cover} alt="" />}
+              <span className="sector-head-text">
+                <b>{t(SECTORS[k].name)}</b>
+                <small>{t(`${niches.length} categories`)}</small>
+              </span>
+            </Link>
+            <ul>
+              {niches.map((n) => (
+                <li key={n.slug}>
+                  <Link href={`/marketplace?niche=${n.slug}`} style={{ '--c': n.color } as CSSProperties}>
+                    <CategoryBadge niche={n.slug} size={40} />
+                    <span className="sc-name">
+                      {t(n.name)}
+                      <small>{counts[n.slug] ? t(`${counts[n.slug]} products`) : t('Sourcing on request')}</small>
+                    </span>
+                    <span className="sc-go" aria-hidden="true">
+                      ›
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Link className="sector-all" href={`/marketplace?c=${k}`}>
+              {t('Browse all')} {t(SECTORS[k].name)} →
+            </Link>
+          </section>
+        );
+      })}
     </div>
   );
 }

@@ -10,7 +10,7 @@ import { fmtNum, usd } from '@/lib/format';
 import { listNotices } from '@/server/services/admin';
 import { countProductsByNiche, getStats, listProducts } from '@/server/services/catalog';
 import { CategoryBadge } from '@/components/catalog/category-icon';
-import { CategoryGrid } from '@/components/catalog/category-grid';
+import { CategoryGrid, SectorShowcase } from '@/components/catalog/category-grid';
 
 export const dynamic = 'force-dynamic';
 
@@ -250,7 +250,7 @@ export default async function HomePage() {
               {t(`All ${NICHES.length} categories & research →`)}
             </Link>
           </div>
-          <CategoryGrid base="/marketplace?niche=" counts={counts} />
+          <SectorShowcase counts={counts} />
         </div>
       </section>
 
