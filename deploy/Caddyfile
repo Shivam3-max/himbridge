@@ -1,0 +1,10 @@
+# HTTPS reverse proxy. Caddy obtains and renews the certificate for $DOMAIN automatically.
+# Point your domain's A record (and www) at the server's IP before starting the stack.
+
+{$DOMAIN}, www.{$DOMAIN} {
+	encode zstd gzip
+	request_body {
+		max_size 8MB
+	}
+	reverse_proxy app:3000
+}

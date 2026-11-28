@@ -1,61 +1,84 @@
 # Himbridge Global Trade Portal
 
-Verified sourcing → export worldwide. See **BLUEPRINT.md** for the full brainstorm (categories, ecosystem, revenue, go-to-market, roadmap) and the brand positioning rule.
+Made in India, delivered to the world. A B2B sourcing ecosystem for Indian manufacturers and overseas buyers of every
+size: e-commerce brands and designers start a guided sourcing request (from 50 pieces, samples first), importers post
+bulk RFQs, and Himbridge runs orders through milestone payments, QC, export documents and door-to-door logistics.
+Manufacturers get an export readiness checklist and services to become export-ready.
 
-## Run
+See [docs/BLUEPRINT.md](docs/BLUEPRINT.md) for the business plan (categories, ecosystem, revenue, go-to-market).
 
-Requires Node.js 22.13+ (uses built-in `node:sqlite`, no npm install needed).
+## Tech stack
+
+| Layer          | Choice                                                                    |
+| -------------- | ------------------------------------------------------------------------- |
+| Framework      | **Next.js 16** (App Router, React Server Components, Server Actions)      |
+| Language       | **TypeScript** (strict)                                                   |
+| Database       | **PostgreSQL** with **Drizzle ORM** and versioned SQL migrations          |
+| Authentication | **Better Auth**: email + password, sessions, email verification, resets   |
+| Validation     | **Zod** on every server action                                            |
+| File storage   | Local disk or any **S3-compatible** bucket (AWS S3, Cloudflare R2, …)     |
+| Email          | Any **SMTP** provider via Nodemailer (+ an outbox log in the admin panel) |
+| Quality        | ESLint, Prettier, Vitest, GitHub Actions CI                               |
+| Deployment     | **Docker** + docker-compose (app, Postgres, Caddy auto-HTTPS)             |
+
+How the code is organised: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · Going live: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) ·
+Team workflow: [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Run it locally
+
+Requires **Node.js 22.13+** (24 recommended). No Docker needed for development.
 
 ```bash
-npm run dev        # http://localhost:3870
-npm run reset-db   # stop the server first; wipes data + uploads, re-seeds on next start
+npm install
+cp .env.example .env          # then set BETTER_AUTH_SECRET (openssl rand -base64 32)
+npm run db:local              # terminal 1: starts a local PostgreSQL on port 5433 (leave running)
+npm run db:migrate            # terminal 2: create the tables
+npm run db:seed               #             load demo data
+npm run dev                   #             http://localhost:3000
 ```
 
-Demo logins (password `Himbridge@123`): admin@himbridge.trade · buyer@himbridge.trade · vendor.in@himbridge.trade (Crafted) · vendor.cn@himbridge.trade (Engineered) · kerala@himbridge.trade (pending vendor) · logistics@himbridge.trade
+Already have PostgreSQL (or Docker)? Skip `db:local` and point `DATABASE_URL` in `.env` at your database.
 
-## What works
+**Demo logins** (password `Himbridge@123`, demo data only; never seed production):
+admin@himbridge.trade · brand@himbridge.trade (e-commerce brand) · designer@himbridge.trade (interior designer) ·
+buyer@himbridge.trade · omar@gulfliving.ae (importers) · vendor.in@himbridge.trade (handicrafts) ·
+panipat@himbridge.trade (home textiles) · varanasi@himbridge.trade (silk) · assam@himbridge.trade (pending, new exporter) ·
+spices@himbridge.trade (spices) · karnal@himbridge.trade (basmati) · kerala@himbridge.trade (pending vendor) · logistics@himbridge.trade
 
-- Public portal: home with live trade-network map, marketplace (Crafted / Engineered collections), categories & research, vendor directory, shipment tracking, trade tools, about.
-- Accounts: registration for buyers, vendors (with KYC upload) and logistics partners; login; email verification; forgot / reset / change password.
-- RFQ → quotation → order → milestones → delivery, with role rules for who updates what.
-- Payments: 30% advance unlocks production, 70% balance after QC unlocks dispatch. Buyers submit a bank / LC reference, admin confirms receipt.
-- Uploads: KYC documents, product photos (shown in the marketplace), RFQ reference images, QC reports, shipping documents.
-- Printable proforma invoice, commercial invoice and packing list (Print → Save as PDF).
-- Languages: English, Español, Français, Deutsch, العربية (right-to-left) across every page, dashboard, form, message and printable document.
+## Scripts
 
-## Email (development mailbox)
+| Command                               | What it does                                                |
+| ------------------------------------- | ----------------------------------------------------------- |
+| `npm run dev`                         | Development server with hot reload                          |
+| `npm run build` / `npm start`         | Production build / run it                                   |
+| `npm run check`                       | Lint + type-check + tests (run before every push)           |
+| `npm run format`                      | Format all files with Prettier                              |
+| `npm run db:generate`                 | Create a migration after changing `src/server/db/schema.ts` |
+| `npm run db:migrate`                  | Apply pending migrations                                    |
+| `npm run db:seed`                     | Load demo data into an empty database                       |
+| `npm run db:studio`                   | Browse the database in Drizzle Studio                       |
+| `npm run i18n:extract` / `i18n:check` | List UI strings / report missing translations               |
 
-No email provider is connected yet. Verification and password-reset emails are saved to the database and shown in
-**Admin → Email Outbox** (and printed in the server log). To send real email, implement `sendMail()` in `server/server.js`
-with SMTP / SES / Postmark and set `PUBLIC_URL` to the live site address.
+## What the portal does
 
-## Translations
-
-Every page is translated in the browser from `public/assets/i18n/<lang>.json`. Each file maps the English UI text to
-its translation; numbers, prices and dates inside a sentence are written as `{#}`. Company names, product titles and
-anything users type are not translated. Missing strings simply stay in English.
-
-When you add or change UI text:
-1. Run the server with `I18N_COLLECT=1 npm start`, open the site, and in the browser console run
-   `const { crawl } = await import('/assets/dev/collect.js'); await crawl(['/', '/marketplace', '/dashboard#overview'])`
-   (log in as each role for dashboard pages). This writes `data/i18n-collected.json`.
-2. `node tools/i18n/extract.mjs` — builds `tools/i18n/strings.en.json` (adds error/toast messages, drops database content).
-3. Add the new strings to each `public/assets/i18n/*.json`, then check with `node tools/i18n/check.mjs es fr de ar`.
-
-## Structure
-
-- `server/server.js` — HTTP server, JSON API, auth/sessions, uploads, email, payments, role checks
-- `server/db.js` — SQLite schema + demo seed
-- `server/data.js` — category research data, order milestone flow
-- `public/` — portal pages (white, block-based portal design)
-- `public/assets/portal.css` — design system · `app.js` — shared shell, i18n, upload helpers · `dashboard.js` — role dashboards
-- `public/assets/brand/` — logo files · `public/assets/map/` — generated world map
-- `tools/build-world-map.mjs` — regenerates the map from Natural Earth `countries-110m.json` (world-atlas npm package):
-  `npm run build-map -- path/to/countries-110m.json`
-
-## Banners & images
-
-- Homepage hero slider (4 slides), page banners (marketplace, categories, vendors, tracking, tools, about), the login card and the About photos use real photos in `public/assets/img/` (Unsplash License — see `public/assets/img/CREDITS.md`).
-- Banners are built in HTML/CSS (photo + navy gradient + text), so the text stays sharp, responsive and translated. To change a page banner, edit its `pageBanner('…', { img, kicker, line, pos })` call; for the slider, edit the slides in `public/index.html`.
-- To swap a photo, replace the file with one of the same name (hero 2000 × 900, page banner 1800 × 640) or point `img` at a new file.
-- Still placeholders: category thumbnails, vendor logos and company/profile photos (these should be the vendors' own images).
+- **Public site:** home with live trade-network map, marketplace (four sectors of Indian-made products), category research,
+  verified vendor directory, shipment tracking, trade tools (landed cost, HS codes, Incoterms, export checklist), about.
+- **Source from India (small & mid buyers):** landing pages for brands, designers and importers (`/solutions/*`); a
+  four-step sourcing request (product links, current / target / selling price, quantities, delivery terms, samples,
+  private label); itemised offers from makers in the same sector, compared against the buyer's current and target
+  price with savings and margin; samples; one-click production order; a message thread with the sourcing desk;
+  suggested order size (trade / mid / volume) and shipping mode (courier / air / LCL / FCL).
+- **Manufacturers:** export readiness checklist per sector (IEC, LUT, AD code, RCMC, FSSAI, FDA, certifications…) with
+  where to apply, fees, timelines and renewal dates; a public Export Readiness Programme page; service requests
+  (Export Start, Sector Ready, Certify, catalogue, shipment desk, training). Buyers can request samples consolidation,
+  inspection, factory visits, design help and DDP shipping.
+- **Accounts:** buyers (brand / designer / importer, which tailors their dashboard), vendors (with KYC upload and verification) and logistics partners; email verification;
+  forgot / reset / change password. Admins are created by the team, never by sign-up.
+- **Trade flow:** RFQ → quotes → accept → order with milestones (confirmed → in production → QC passed → shipped →
+  customs → delivered). Each party can only move the milestones it owns.
+- **Payments:** advance unlocks production (30%, or 50% for trade-size sourcing orders under ₹15 lakh), balance after
+  QC unlocks dispatch. Buyers can reorder any past order in two clicks. Buyers submit a bank/LC
+  reference; admins confirm receipt.
+- **Documents:** printable proforma invoice, commercial invoice and packing list; uploads for KYC, product photos,
+  RFQ references, QC reports and shipping documents (type-checked by file contents, permission-checked on download).
+- **Languages:** English, Español, Français, Deutsch, العربية (right-to-left), rendered on the server.

@@ -1,14 +1,58 @@
 {
-  "name": "himbridge-global-portal",
-  "version": "0.1.0",
+  "name": "himbridge-portal",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "description": "Himbridge Global Trade Portal — verified sourcing, export to the world",
-  "scripts": {
-    "dev": "node --watch server/server.js",
-    "start": "node server/server.js",
-    "reset-db": "rm -rf data/himbridge.db data/himbridge.db-wal data/himbridge.db-shm data/uploads",
-    "build-map": "node tools/build-world-map.mjs"
+  "engines": {
+    "node": ">=22.13"
   },
-  "engines": { "node": ">=22.13" }
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run lint && npm run typecheck && npm run test",
+    "db:local": "tsx scripts/db-local.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "db:studio": "drizzle-kit studio",
+    "i18n:extract": "tsx scripts/i18n-extract.ts",
+    "i18n:check": "tsx scripts/i18n-check.ts",
+    "build-map": "node scripts/build-world-map.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1176.0",
+    "better-auth": "^1.7.28",
+    "drizzle-orm": "^0.45.4",
+    "next": "^16.4.6",
+    "nodemailer": "^10.6.1",
+    "postgres": "^4.1.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@types/nodemailer": "^8.0.2",
+    "@types/react": "^19.3.1",
+    "@types/react-dom": "^19.3.0",
+    "dotenv": "^18.0.10",
+    "drizzle-kit": "^0.31.11",
+    "embedded-postgres": "^19.0.0-beta.20",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.6",
+    "prettier": "^3.10.1",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.1",
+    "world-atlas": "^2.0.2"
+  }
 }
