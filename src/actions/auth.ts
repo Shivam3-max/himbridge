@@ -1,5 +1,6 @@
 'use server';
 
+import { randomInt } from 'node:crypto';
 import { eq } from 'drizzle-orm';
 import { cookies, headers } from 'next/headers';
 import { isLocale, LOCALE_COOKIE } from '@/i18n/config';
@@ -15,26 +16,39 @@ import { ORIGIN_COUNTRY } from '@/domain/sectors';
 import { isBuyerType } from '@/domain/sourcing';
 import { requireUser } from '@/server/auth/session';
 
+/** A strong, easy-to-type password like "HB-7KQ4-X92R-MPT3" (no look-alike characters). */
+function generatePassword() {
+  const abc = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  const group = () => Array.from({ length: 4 }, () => abc[randomInt(abc.length)]).join('');
+  return `HB-${group()}-${group()}-${group()}`;
+}
+
 /**
- * Creates an account. Sign-up is only possible through this action (the raw HTTP endpoint is disabled),
+ * Creates an account and signs the person in straight away. Their login ID is their email; if they left the
+ * password blank, one is generated and returned so the page can show it once. Sign-up is only possible through this action (the raw HTTP endpoint is disabled),
  * so the account type is always validated and vendors always get a profile.
  */
-export async function register(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+export async function register(
+  _prev: ActionResult<{ email: string; password?: string }> | null,
+  formData: FormData,
+): Promise<ActionResult<{ email: string; password?: string }>> {
   return runAction(async () => {
     const input = registerSchema.parse(formObject(formData));
     const existing = await db.query.user.findFirst({ where: eq(user.email, input.email), columns: { id: true } });
     if (existing) throw new AppError('An account with this email already exists', 409);
+    const generated = input.password ? undefined : generatePassword();
 
     const res = await auth.api.signUpEmail({
       body: {
         name: input.name,
         email: input.email,
-        password: input.password,
+        password: input.password ?? generated!,
         role: input.role,
         company: input.company,
         country: input.role === 'vendor' ? ORIGIN_COUNTRY : input.country,
         phone: input.phone,
         buyerType: input.role === 'buyer' ? (input.buyerType ?? 'importer') : '',
+        buyerNote: input.role === 'buyer' && input.buyerType === 'other' ? input.buyerNote : '',
         callbackURL: '/verify-email',
       },
       headers: await headers(),
@@ -69,6 +83,7 @@ export async function register(_prev: ActionResult | null, formData: FormData): 
           country: input.role === 'vendor' ? ORIGIN_COUNTRY : input.country,
           phone: input.phone,
           buyerType: '',
+          buyerNote: '',
           vendor: null,
         };
         // KYC upload failures must not undo a successful registration; documents can be added later.
@@ -77,6 +92,7 @@ export async function register(_prev: ActionResult | null, formData: FormData): 
         );
       }
     }
+    return { email: input.email, password: generated };
   });
 }
 

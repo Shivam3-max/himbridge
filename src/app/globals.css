@@ -3745,3 +3745,67 @@ a.service-card:hover {
 .cat-grid:not(.compact) .cat-tile:has(.cat-photo) .cat-count {
   padding: 0 6px;
 }
+
+/* Registration: buyer type cards with icons, account-ready screen */
+.role-pick.buyer-pick {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.buyer-ic {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--tint);
+  border: 1px solid var(--line);
+  color: var(--saffron);
+  margin-bottom: 6px;
+}
+.role-pick label:has(input:checked) .buyer-ic {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: #fff;
+}
+.account-ready .block-body > p:first-child {
+  margin-top: 0;
+}
+.login-box {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 8px 12px;
+  align-items: center;
+  padding: 14px 16px;
+  margin: 0 0 12px;
+  border: 1px dashed var(--saffron);
+  border-radius: var(--radius);
+  background: #fff8ec;
+}
+.login-box dt {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.login-box dd {
+  margin: 0;
+  font-weight: 700;
+  color: var(--navy);
+  word-break: break-all;
+}
+.login-box code {
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+@media (max-width: 860px) {
+  .role-pick.buyer-pick {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .role-pick,
+  .role-pick.buyer-pick {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

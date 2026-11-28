@@ -171,7 +171,7 @@ export const AUDIENCES: Audience[] = [
 ];
 
 export const audienceBySlug = (slug: string) => AUDIENCES.find((a) => a.slug === slug);
-export const audienceByType = (type: BuyerType) => AUDIENCES.find((a) => a.type === type)!;
+export const audienceByType = (type: BuyerType) => AUDIENCES.find((a) => a.type === type);
 
 /** Home page "Who are you sourcing for?" cards. */
 export const HOME_PATHS: [href: string, img: string, title: string, size: string, text: string][] = [

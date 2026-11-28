@@ -104,8 +104,9 @@ describe('export readiness', () => {
 
 describe('audiences', () => {
   it('has one landing page per buyer type, reachable by its slug', () => {
-    for (const b of BUYER_TYPES) expect(audienceBySlug(BUYER_TYPE_INFO[b].slug)?.type).toBe(b);
-    expect(AUDIENCES).toHaveLength(BUYER_TYPES.length);
+    const withPage = BUYER_TYPES.filter((b) => BUYER_TYPE_INFO[b].slug);
+    for (const b of withPage) expect(audienceBySlug(BUYER_TYPE_INFO[b].slug)?.type).toBe(b);
+    expect(AUDIENCES).toHaveLength(withPage.length);
   });
 });
 

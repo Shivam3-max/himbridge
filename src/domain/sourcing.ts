@@ -8,12 +8,14 @@
  */
 
 /** Who the buyer is. Drives their dashboard, defaults and the landing page they came from. */
-export const BUYER_TYPES = ['brand', 'designer', 'importer'] as const;
+export const BUYER_TYPES = ['importer', 'brand', 'designer', 'other'] as const;
 export type BuyerType = (typeof BUYER_TYPES)[number];
+/** `slug` is the buyer's landing page under /solutions ('' = none). "other" buyers describe their need in `buyerNote`. */
 export const BUYER_TYPE_INFO: Record<BuyerType, { label: string; sub: string; slug: string }> = {
+  importer: { label: 'Importer / distributor', sub: 'Bulk and container orders', slug: 'importers' },
   brand: { label: 'E-commerce brand / boutique', sub: 'Small batches, private label, samples first', slug: 'brands' },
   designer: { label: 'Architect / interior designer', sub: 'Project-based sourcing, custom pieces', slug: 'designers' },
-  importer: { label: 'Importer / distributor', sub: 'Bulk and container orders', slug: 'importers' },
+  other: { label: 'Other / custom requirement', sub: 'Anything else: tell us what you need', slug: '' },
 };
 export const isBuyerType = (v: unknown): v is BuyerType => typeof v === 'string' && (BUYER_TYPES as readonly string[]).includes(v);
 
@@ -37,7 +39,12 @@ export const REQUEST_KIND_INFO: Record<RequestKind, { label: string; sub: string
     icon: '▦',
   },
 };
-export const DEFAULT_KIND: Record<BuyerType, RequestKind> = { brand: 'manufacture', designer: 'project', importer: 'source' };
+export const DEFAULT_KIND: Record<BuyerType, RequestKind> = {
+  importer: 'source',
+  brand: 'manufacture',
+  designer: 'project',
+  other: 'manufacture',
+};
 
 /** Sourcing project stages, in order. */
 export const SOURCING_FLOW = [

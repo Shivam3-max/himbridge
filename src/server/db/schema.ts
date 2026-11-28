@@ -44,6 +44,8 @@ export const user = pgTable(
     phone: text('phone').notNull().default(''),
     /** Buyers only: brand / designer / importer (see src/domain/sourcing.ts). Empty for other roles. */
     buyerType: text('buyer_type').notNull().default(''),
+    /** Buyers of type "other": what they want to source, in their own words. */
+    buyerNote: text('buyer_note').notNull().default(''),
     /** "active" accounts can sign in; "disabled" accounts are blocked. */
     status: text('status', { enum: ['active', 'disabled'] })
       .notNull()

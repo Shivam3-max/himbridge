@@ -1,0 +1,1 @@
+ALTER TABLE "user" ADD COLUMN "buyer_note" text DEFAULT '' NOT NULL;

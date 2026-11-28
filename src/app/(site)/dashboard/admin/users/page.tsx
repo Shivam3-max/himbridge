@@ -1,3 +1,4 @@
+import { BUYER_TYPE_INFO, isBuyerType } from '@/domain/sourcing';
 import { Badge, Block } from '@/components/ui/primitives';
 import { getI18n } from '@/i18n/server';
 import { fmtDate } from '@/lib/format';
@@ -32,6 +33,8 @@ export default async function UsersPage() {
                 </td>
                 <td>
                   <Badge tone="info">{u.role}</Badge>
+                  {isBuyerType(u.buyerType) && <div className="tiny muted">{t(BUYER_TYPE_INFO[u.buyerType].label)}</div>}
+                  {u.buyerNote && <div className="tiny">“{u.buyerNote}”</div>}
                   {u.status !== 'active' && (
                     <>
                       {' '}

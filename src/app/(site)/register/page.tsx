@@ -11,7 +11,7 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
   const role = sp.role;
   // ?as=brands|designers|importers comes from the "Source from India" landing pages.
   const as = String(sp.as ?? '');
-  const initialBuyerType: BuyerType = BUYER_TYPES.find((b) => b === as || BUYER_TYPE_INFO[b].slug === as) ?? 'brand';
+  const initialBuyerType: BuyerType = (as && BUYER_TYPES.find((b) => b === as || BUYER_TYPE_INFO[b].slug === as)) || 'importer';
   const nextRaw = String(sp.next ?? '');
   const next = nextRaw.startsWith('/dashboard') && !nextRaw.startsWith('//') ? nextRaw : undefined;
   const initialRole: SelfServiceRole = (SELF_SERVICE_ROLES as readonly string[]).includes(String(role))
@@ -21,8 +21,8 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
     <>
       <PageBar
         crumbs={[[null, 'Registration']]}
-        title="New Registration"
-        lead="Choose your account type. Manufacturers go through KYC verification before they can quote."
+        title="Create your free account"
+        lead="Your account and login are created instantly. Manufacturers then go through KYC verification before they can quote."
       />
       <div className="wrap section" style={{ maxWidth: 900 }}>
         <RegisterForm initialRole={initialRole} initialBuyerType={initialBuyerType} next={next} />

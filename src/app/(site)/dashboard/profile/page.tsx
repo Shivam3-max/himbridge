@@ -27,6 +27,7 @@ export default async function ProfilePage() {
     ['Country', me.country],
     ['Phone', me.phone || '—'],
     ['Account type', t(ROLE_LABEL[me.role])],
+    ...(me.buyerNote ? ([['What you want to source', me.buyerNote]] as [string, string][]) : []),
     ...(v
       ? ([
           ['Factory country', t(ORIGIN_COUNTRY)],

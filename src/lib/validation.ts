@@ -53,7 +53,9 @@ export const registerSchema = z
     email,
     phone: text(40),
     buyerType: z.enum(BUYER_TYPES).optional().catch(undefined),
-    password,
+    buyerNote: text(500),
+    /** Optional: when left blank, a secure password is generated and shown once after sign-up. */
+    password: z.preprocess((v) => (v === '' || v == null ? undefined : v), password.optional()),
     agree: z.literal('on', { message: 'Please accept the Terms of Use to continue.' }),
     niche: z.string().optional(),
     cluster: text(120),
@@ -63,6 +65,8 @@ export const registerSchema = z
     about: text(1000),
   })
   .superRefine((v, ctx) => {
+    if (v.role === 'buyer' && v.buyerType === 'other' && !v.buyerNote)
+      ctx.addIssue({ code: 'custom', path: ['buyerNote'], message: 'Tell us what you would like to source' });
     if (v.role !== 'vendor') return;
     if (!v.niche || !(NICHE_SLUGS as string[]).includes(v.niche))
       ctx.addIssue({ code: 'custom', path: ['niche'], message: 'Choose your primary niche' });

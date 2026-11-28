@@ -32,6 +32,8 @@ export async function listUsers(viewer: CurrentUser) {
       company: user.company,
       country: user.country,
       status: user.status,
+      buyerType: user.buyerType,
+      buyerNote: user.buyerNote,
       createdAt: user.createdAt,
       niche: vendorProfile.niche,
       cluster: vendorProfile.cluster,

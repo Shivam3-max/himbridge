@@ -48,17 +48,60 @@ export function RegisterForm({
   const [role, setRole] = useState<SelfServiceRole>(initialRole);
   const [country, setCountry] = useState('');
   const [buyerType, setBuyerType] = useState<string>(initialBuyerType);
+  const [created, setCreated] = useState<{ email: string; password?: string } | null>(null);
+  const [copied, setCopied] = useState(false);
+  const goNext = () => {
+    router.push(next ?? '/dashboard?welcome=1');
+    router.refresh();
+  };
   const f = useFormAction(register, {
     reset: false,
     validate: (fd) => (fd.get('agree') ? null : 'Please accept the Terms of Use to continue.'),
-    onSuccess: () => {
-      router.push(next ?? '/dashboard?welcome=1');
-      router.refresh();
+    // Signed in already. If we generated the password, show the login details once before moving on.
+    onSuccess: (data) => {
+      if (data?.password) {
+        setCreated(data);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else goNext();
     },
   });
   useEffect(() => {
     if (f.state && !f.state.ok) window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [f.state]);
+
+  if (created?.password) {
+    return (
+      <div className="block account-ready">
+        <div className="block-head green">
+          <h3>✔ {t('Your account is ready')}</h3>
+        </div>
+        <div className="block-body">
+          <p>{t('You are signed in. Save these login details: you will need them next time.')}</p>
+          <dl className="login-box">
+            <dt>{t('Login ID')}</dt>
+            <dd>{created.email}</dd>
+            <dt>{t('Password')}</dt>
+            <dd>
+              <code>{created.password}</code>{' '}
+              <button
+                type="button"
+                className="btn sm ghost"
+                onClick={() => {
+                  void navigator.clipboard?.writeText(`${created.email} / ${created.password}`).then(() => setCopied(true));
+                }}
+              >
+                {copied ? t('Copied') : t('Copy')}
+              </button>
+            </dd>
+          </dl>
+          <p className="small muted">{t('You can change your password any time under Profile → Change password.')}</p>
+          <button type="button" className="btn saffron" onClick={goNext}>
+            {t('Continue to my dashboard')} →
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form className="block" onSubmit={f.onSubmit} noValidate>
@@ -93,6 +136,19 @@ export function RegisterForm({
           <>
             <h3 style={{ marginTop: 6 }}>{t('What best describes your business?')}</h3>
             <BuyerTypeCards name="buyerType" value={buyerType} onChange={setBuyerType} />
+            {buyerType === 'other' && (
+              <div className="field">
+                <label>
+                  {t('What would you like to source from India?')} <span className="req">*</span>
+                </label>
+                <textarea
+                  name="buyerNote"
+                  maxLength={500}
+                  placeholder={t('e.g. custom wedding favours, hotel amenity kits, corporate gifts, a product you designed…')}
+                />
+                <span className="tiny muted">{t('We handle custom requirements too. Our sourcing desk will contact you.')}</span>
+              </div>
+            )}
           </>
         )}
 
@@ -128,9 +184,10 @@ export function RegisterForm({
           </div>
           <div className="field">
             <label>
-              {t('Password')} <span className="req">*</span> <span className="tiny muted">{t('(min 8 characters)')}</span>
+              {t('Password')} <span className="tiny muted">{t('(optional)')}</span>
             </label>
-            <input name="password" type="password" autoComplete="new-password" required minLength={8} />
+            <input name="password" type="password" autoComplete="new-password" minLength={8} />
+            <span className="tiny muted">{t("Leave blank and we'll create a secure password for you. Your login ID is your email.")}</span>
           </div>
         </div>
 
@@ -186,7 +243,7 @@ export function RegisterForm({
           {t('I confirm the details are correct and agree to the Himbridge Terms of Use and Privacy Policy.')}
         </label>
         <SubmitButton className="btn saffron" pending={f.pending}>
-          Submit registration
+          Create my account
         </SubmitButton>
         <span className="small muted" style={{ marginInlineStart: 10 }}>
           {t('Already registered?')} <Link href="/login">{t('Login')}</Link>
