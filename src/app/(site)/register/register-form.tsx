@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { register } from '@/actions/auth';
 import { Dropzone, SubmitButton, useFormAction } from '@/components/ui/forms';
 import { FormMessage } from '@/components/ui/primitives';
-import { NicheOptions } from '@/components/dashboard/trade-forms';
+import { CategoryPicker } from '@/components/catalog/category-grid';
 import type { SelfServiceRole } from '@/domain/roles';
 import { BuyerTypeCards } from '@/components/account/buyer-type-picker';
 import type { BuyerType } from '@/domain/sourcing';
@@ -142,14 +142,12 @@ export function RegisterForm({
               <input value={t('India')} readOnly disabled />
               <span className="tiny muted">{t('Himbridge onboards Indian manufacturers only.')}</span>
             </div>
-            <div className="field">
+            <div className="field full">
               <label>
                 {t('Primary category')} <span className="req">*</span>
               </label>
-              <select name="niche" defaultValue="">
-                <option value="">{t('Select')}</option>
-                <NicheOptions />
-              </select>
+              <CategoryPicker />
+              <span className="tiny muted">{t('Your products appear under this category, with its photo, across the marketplace.')}</span>
             </div>
             <div className="field">
               <label>{t('City / cluster')}</label>

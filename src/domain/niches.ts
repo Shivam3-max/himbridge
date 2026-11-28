@@ -15,6 +15,8 @@ export interface Niche {
   /** Typical HS chapters, comma separated. */
   hs: string;
   color: string;
+  /** Category photo shown on tiles, pickers and as product artwork until a maker uploads photos. */
+  image?: string;
 }
 
 export const NICHES: readonly Niche[] = [
@@ -31,6 +33,7 @@ export const NICHES: readonly Niche[] = [
     phase: 1,
     hs: '8306, 4420, 6802, 6913',
     color: '#b45309',
+    image: '/images/categories/handicrafts.jpg',
   },
   {
     slug: 'wood-furniture',
@@ -45,6 +48,7 @@ export const NICHES: readonly Niche[] = [
     phase: 1,
     hs: '9403, 9401',
     color: '#7c4a1e',
+    image: '/images/categories/wood-furniture.jpg',
   },
   {
     slug: 'rugs',
@@ -59,6 +63,7 @@ export const NICHES: readonly Niche[] = [
     phase: 1,
     hs: '5701, 5702, 5705',
     color: '#9f1239',
+    image: '/images/categories/rugs.jpg',
   },
   {
     slug: 'home-textiles',
@@ -73,6 +78,7 @@ export const NICHES: readonly Niche[] = [
     phase: 1,
     hs: '6302, 6304, 6301',
     color: '#0f766e',
+    image: '/images/categories/home-textiles.jpg',
   },
   {
     slug: 'wellness',
@@ -87,6 +93,7 @@ export const NICHES: readonly Niche[] = [
     phase: 2,
     hs: '3004, 1211, 3301',
     color: '#15803d',
+    image: '/images/categories/wellness.jpg',
   },
   {
     slug: 'jewellery',
@@ -101,6 +108,7 @@ export const NICHES: readonly Niche[] = [
     phase: 2,
     hs: '7117, 7103, 7113',
     color: '#a21caf',
+    image: '/images/categories/jewellery.jpg',
   },
   {
     slug: 'leather',
@@ -115,6 +123,7 @@ export const NICHES: readonly Niche[] = [
     phase: 2,
     hs: '4202, 6403',
     color: '#78350f',
+    image: '/images/categories/leather.jpg',
   },
   {
     slug: 'spices',
@@ -129,6 +138,7 @@ export const NICHES: readonly Niche[] = [
     phase: 1,
     hs: '0904, 0910, 0908',
     color: '#c2410c',
+    image: '/images/categories/spices.jpg',
   },
   {
     slug: 'apparel',
@@ -143,6 +153,7 @@ export const NICHES: readonly Niche[] = [
     phase: 1,
     hs: '6109, 6204, 6205',
     color: '#1d4ed8',
+    image: '/images/categories/apparel.jpg',
   },
   {
     slug: 'rice-grains',
@@ -157,6 +168,7 @@ export const NICHES: readonly Niche[] = [
     phase: 2,
     hs: '1006, 1008',
     color: '#a16207',
+    image: '/images/categories/rice-grains.jpg',
   },
   {
     slug: 'tea-coffee',
@@ -171,6 +183,7 @@ export const NICHES: readonly Niche[] = [
     phase: 2,
     hs: '0902, 0901',
     color: '#166534',
+    image: '/images/categories/tea-coffee.jpg',
   },
   {
     slug: 'nuts-superfoods',
@@ -185,6 +198,7 @@ export const NICHES: readonly Niche[] = [
     phase: 2,
     hs: '0801, 2008, 1008',
     color: '#ca8a04',
+    image: '/images/categories/nuts-superfoods.jpg',
   },
   {
     slug: 'handloom-silk',
@@ -199,6 +213,7 @@ export const NICHES: readonly Niche[] = [
     phase: 2,
     hs: '5007, 5208, 6214',
     color: '#be123c',
+    image: '/images/categories/handloom-silk.jpg',
   },
   {
     slug: 'stone',
@@ -213,6 +228,7 @@ export const NICHES: readonly Niche[] = [
     phase: 3,
     hs: '6802, 2515, 2516',
     color: '#57534e',
+    image: '/images/categories/stone.jpg',
   },
   {
     slug: 'essential-oils',
@@ -227,6 +243,7 @@ export const NICHES: readonly Niche[] = [
     phase: 3,
     hs: '3301, 3304, 3305',
     color: '#0d9488',
+    image: '/images/categories/essential-oils.jpg',
   },
   {
     slug: 'incense-festive',
@@ -241,6 +258,7 @@ export const NICHES: readonly Niche[] = [
     phase: 3,
     hs: '3307, 3406, 9505',
     color: '#9333ea',
+    image: '/images/categories/incense-festive.jpg',
   },
 ];
 

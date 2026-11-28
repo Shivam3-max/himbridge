@@ -1,6 +1,7 @@
+import { CategoryBadge } from '@/components/catalog/category-icon';
 import { redirect } from 'next/navigation';
 import { AddProductPhotos, DeleteProductButton, ProductForm } from '@/components/dashboard/trade-forms';
-import { Block, Placeholder } from '@/components/ui/primitives';
+import { Block } from '@/components/ui/primitives';
 import { nicheName } from '@/domain/niches';
 import { getI18n } from '@/i18n/server';
 import { fmtNum, usd } from '@/lib/format';
@@ -35,7 +36,7 @@ export default async function ProductsPage() {
                 <tr key={p.id}>
                   <td style={{ width: 80 }}>
                     {/* eslint-disable-next-line @next/next/no-img-element -- permission-checked file route */}
-                    {p.imageId ? <img className="thumb" src={`/files/${p.imageId}`} alt="" /> : <Placeholder className="niche-img" />}
+                    {p.imageId ? <img className="thumb" src={`/files/${p.imageId}`} alt="" /> : <CategoryBadge niche={p.niche} size={40} />}
                     <AddProductPhotos productId={p.id} />
                   </td>
                   <td>

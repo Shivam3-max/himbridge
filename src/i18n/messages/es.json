@@ -1858,5 +1858,17 @@
  "Your studio website or portfolio": "El sitio web o portafolio de su estudio",
  "Your target": "Su objetivo",
  "Buyer Dashboard": "Panel del comprador",
- "Best offer value": "Valor de la mejor oferta"
+ "Best offer value": "Valor de la mejor oferta",
+ "{#} products": "{#} productos",
+ "All {#} categories & research →": "Las {#} categorías e investigación →",
+ "Browse by category": "Explorar por categoría",
+ "Every category below is open for sourcing today: tell us what you need and our team will match verified makers.": "Todas las categorías siguientes están abiertas al abastecimiento hoy: díganos qué necesita y nuestro equipo le conectará con fabricantes verificados.",
+ "Need something now? Pick a category and our sourcing desk will find makers for you.": "¿Lo necesita ya? Elija una categoría y nuestro equipo de abastecimiento encontrará fabricantes para usted.",
+ "New listings from verified Indian makers appear here.": "Aquí aparecen los nuevos productos de fabricantes indios verificados.",
+ "no live listings yet.": "aún no hay productos publicados.",
+ "No products match these filters yet.": "Aún no hay productos que coincidan con estos filtros.",
+ "Our catalogue is opening: verified makers are listing their first products.": "Nuestro catálogo se está abriendo: los fabricantes verificados están publicando sus primeros productos.",
+ "Our first manufacturers are being verified.": "Estamos verificando a nuestros primeros fabricantes.",
+ "Sourcing on request": "Abastecimiento bajo pedido",
+ "Your products appear under this category, with its photo, across the marketplace.": "Sus productos aparecerán en esta categoría, con su foto, en todo el marketplace."
 }

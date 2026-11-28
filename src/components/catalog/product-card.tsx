@@ -5,7 +5,8 @@ import type { CSSProperties } from 'react';
 import { getNiche } from '@/domain/niches';
 import { useT } from '@/i18n/client';
 import { fmtNum, singularUnit, usd } from '@/lib/format';
-import { SectorChip, Placeholder } from '../ui/primitives';
+import { SectorChip } from '../ui/primitives';
+import { CategoryCover } from './category-icon';
 
 export interface ProductCardData {
   id: number;
@@ -36,9 +37,9 @@ export function ProductCard({ p }: { p: ProductCardData }) {
           <img src={`/files/${p.imageId}`} alt={p.title} loading="lazy" />
         </div>
       ) : (
-        <Placeholder label="Product image" size="800 × 600" className="pthumb">
+        <CategoryCover niche={p.niche} className="pthumb" label={p.title}>
           <SectorChip niche={p.niche} />
-        </Placeholder>
+        </CategoryCover>
       )}
       <div className="pbody">
         <span className="tiny muted">

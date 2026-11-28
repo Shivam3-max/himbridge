@@ -3,14 +3,14 @@ import type { CSSProperties } from 'react';
 import { ProductCard } from '@/components/catalog/product-card';
 import { HeroSlider } from '@/components/home/hero-slider';
 import { NetworkMap } from '@/components/home/network-map';
-import { Placeholder } from '@/components/ui/primitives';
-import { sectorName } from '@/domain/sectors';
 import { NICHES } from '@/domain/niches';
 import { HOME_PATHS } from '@/domain/audiences';
 import { getI18n } from '@/i18n/server';
 import { fmtNum, usd } from '@/lib/format';
 import { listNotices } from '@/server/services/admin';
-import { getStats, listProducts } from '@/server/services/catalog';
+import { countProductsByNiche, getStats, listProducts } from '@/server/services/catalog';
+import { CategoryBadge } from '@/components/catalog/category-icon';
+import { CategoryGrid } from '@/components/catalog/category-grid';
 
 export const dynamic = 'force-dynamic';
 
@@ -150,7 +150,13 @@ const MARKETS: [string, string, string, string][] = [
 ];
 
 export default async function HomePage() {
-  const [{ t }, stats, notices, products] = await Promise.all([getI18n(), getStats(), listNotices(5), listProducts({ limit: 8 })]);
+  const [{ t }, stats, notices, products, counts] = await Promise.all([
+    getI18n(),
+    getStats(),
+    listNotices(5),
+    listProducts({ limit: 8 }),
+    countProductsByNiche(),
+  ]);
   const statItems: [key: string, label: string, value: string][] = [
     ['vendors', 'Verified vendors', fmtNum(stats.vendors)],
     ['clusters', 'Manufacturing clusters', fmtNum(stats.clusters)],
@@ -239,6 +245,18 @@ export default async function HomePage() {
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <div className="section-head">
+            <h2 className="section-title">{t('Browse by category')}</h2>
+            <Link className="small" href="/niches">
+              {t(`All ${NICHES.length} categories & research →`)}
+            </Link>
+          </div>
+          <CategoryGrid base="/marketplace?niche=" counts={counts} />
+        </div>
+      </section>
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <div className="section-head">
             <h2 className="section-title">{t('Online Services')}</h2>
             <span className="small muted">{t('Quick access for buyers, manufacturers & partners')}</span>
           </div>
@@ -285,7 +303,7 @@ export default async function HomePage() {
                     style={{ '--c': n.color } as CSSProperties}
                     href={`/marketplace?niche=${n.slug}`}
                   >
-                    <Placeholder label={sectorName(n.slug)} size="Image" className="niche-img" />
+                    <CategoryBadge niche={n.slug} size={52} />
                     <span>
                       <b>{t(n.name)}</b>
                       <small>{n.clusters}</small>
@@ -374,11 +392,19 @@ export default async function HomePage() {
               {t('Open marketplace →')}
             </Link>
           </div>
-          <div className="products">
-            {products.map((p) => (
-              <ProductCard key={p.id} p={p} />
-            ))}
-          </div>
+          {products.length ? (
+            <div className="products">
+              {products.map((p) => (
+                <ProductCard key={p.id} p={p} />
+              ))}
+            </div>
+          ) : (
+            <div className="empty-rich">
+              <b>{t('New listings from verified Indian makers appear here.')}</b>
+              <p className="small muted">{t('Need something now? Pick a category and our sourcing desk will find makers for you.')}</p>
+              <CategoryGrid base="/dashboard/sourcing/new?niche=" />
+            </div>
+          )}
         </div>
       </section>
 

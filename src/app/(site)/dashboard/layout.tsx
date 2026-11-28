@@ -3,7 +3,9 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { MENUS } from '@/components/dashboard/menu';
 import { SidebarNav } from '@/components/dashboard/sidebar';
-import { Badge, SectorChip, Placeholder } from '@/components/ui/primitives';
+import { Badge, SectorChip } from '@/components/ui/primitives';
+import { CategoryBadge } from '@/components/catalog/category-icon';
+import { initials } from '@/lib/format';
 import { ROLE_LABEL } from '@/domain/roles';
 import { getI18n } from '@/i18n/server';
 import { requirePageUser } from '@/server/auth/session';
@@ -29,7 +31,11 @@ export default async function DashboardLayout({ children }: { children: ReactNod
       <div className="wrap dash">
         <aside className="side block">
           <div className="side-user">
-            <Placeholder className="logo-ph" />
+            {me.vendor ? (
+              <CategoryBadge niche={me.vendor.niche} size={56} />
+            ) : (
+              <span className="avatar">{initials(me.company || me.name)}</span>
+            )}
             <b style={{ marginTop: 8 }}>{me.company}</b>
             <span className="tiny muted">
               {me.name} · {t(ROLE_LABEL[me.role])}

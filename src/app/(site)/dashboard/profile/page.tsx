@@ -2,7 +2,9 @@ import { BuyerTypePicker } from '@/components/account/buyer-type-picker';
 import { FileList, UploadForm } from '@/components/dashboard/files';
 import { ChangePasswordForm } from '@/components/dashboard/trade-forms';
 import { VerifyEmailBanner } from '@/components/dashboard/verify-banner';
-import { Banner, Block, Placeholder } from '@/components/ui/primitives';
+import { Banner, Block } from '@/components/ui/primitives';
+import { CategoryCover } from '@/components/catalog/category-icon';
+import { initials } from '@/lib/format';
 import { ORIGIN_COUNTRY, sectorName } from '@/domain/sectors';
 import { KYC_DOC_LABELS } from '@/domain/files';
 import { nicheName } from '@/domain/niches';
@@ -55,8 +57,17 @@ export default async function ProfilePage() {
             </tbody>
           </table>
           <div>
-            <Placeholder label={v ? 'Company logo' : 'Profile photo'} size="400 × 400" style={{ height: 200 }} />
-            {v && <Placeholder label="Factory photo" size="1200 × 600" style={{ height: 120, marginTop: 10 }} />}
+            {v ? (
+              <CategoryCover niche={v.niche} className="profile-cover" label={me.company}>
+                <span className="profile-cover-name">{me.company}</span>
+              </CategoryCover>
+            ) : (
+              <div className="profile-avatar">
+                <span className="avatar lg">{initials(me.company || me.name)}</span>
+                <b>{me.company}</b>
+                <span className="tiny muted">{me.country}</span>
+              </div>
+            )}
           </div>
         </div>
       </Block>

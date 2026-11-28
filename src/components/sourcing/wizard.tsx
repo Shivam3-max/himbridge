@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { createSourcingRequest } from '@/actions/sourcing';
-import { NicheOptions } from '@/components/dashboard/trade-forms';
+import { CategoryPicker } from '@/components/catalog/category-grid';
 import { nicheName } from '@/domain/niches';
 import {
   DELIVERY_TERM_LABEL,
@@ -194,14 +194,11 @@ export function SourcingWizard({ defaults }: { defaults: WizardDefaults }) {
             ))}
           </div>
           <div className="grid-form">
-            <div className="field">
+            <div className="field full">
               <label>
                 {t('Product category')} <span className="req">*</span>
               </label>
-              <select name="niche" value={niche} onChange={(e) => setNiche(e.target.value)}>
-                <option value="">{t('Select')}</option>
-                <NicheOptions />
-              </select>
+              <CategoryPicker value={niche} onChange={setNiche} />
             </div>
             <div className="field">
               <label>

@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Badge, SectorChip, PageBanner, PageBar, Placeholder } from '@/components/ui/primitives';
+import { Badge, SectorChip, PageBanner, PageBar } from '@/components/ui/primitives';
+import { CategoryBadge } from '@/components/catalog/category-icon';
+import { CategoryGrid } from '@/components/catalog/category-grid';
 import { nicheName } from '@/domain/niches';
 import { getI18n } from '@/i18n/server';
 import { listVerifiedVendors } from '@/server/services/catalog';
@@ -35,7 +37,7 @@ export default async function VendorsPage() {
             {vendors.map((v) => (
               <div key={v.id} className="block">
                 <div className="block-body" style={{ display: 'flex', gap: 14 }}>
-                  <Placeholder label="Logo" className="logo-ph" />
+                  <CategoryBadge niche={v.niche} size={64} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
                       <h3 style={{ margin: 0 }}>{v.company}</h3>
@@ -75,7 +77,13 @@ export default async function VendorsPage() {
             ))}
           </div>
         ) : (
-          <div className="empty">{t('No verified vendors yet.')}</div>
+          <div className="empty-rich">
+            <b>{t('Our first manufacturers are being verified.')}</b>
+            <p className="small muted">
+              {t('Every category below is open for sourcing today: tell us what you need and our team will match verified makers.')}
+            </p>
+            <CategoryGrid base="/dashboard/sourcing/new?niche=" />
+          </div>
         )}
       </div>
     </>

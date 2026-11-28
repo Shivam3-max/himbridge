@@ -107,6 +107,17 @@ export async function assertOwnsProduct(viewer: CurrentUser, id: number) {
 }
 
 /** Headline numbers for the home page and admin control room. */
+/** Live product listings per category (verified vendors only), for category tiles. */
+export async function countProductsByNiche() {
+  const rows = await db
+    .select({ niche: product.niche, n: count() })
+    .from(product)
+    .innerJoin(vendorProfile, eq(vendorProfile.userId, product.vendorId))
+    .where(and(eq(product.status, 'active'), eq(vendorProfile.verification, 'verified')))
+    .groupBy(product.niche);
+  return Object.fromEntries(rows.map((r) => [r.niche, r.n])) as Record<string, number>;
+}
+
 export async function getStats() {
   const verified = eq(vendorProfile.verification, 'verified');
   const [vendors] = await db

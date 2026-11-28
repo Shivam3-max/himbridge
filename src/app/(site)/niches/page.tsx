@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { NicheScorecard } from '@/components/catalog/niche-scorecard';
+import { CategoryBadge } from '@/components/catalog/category-icon';
 import { PageBanner, PageBar } from '@/components/ui/primitives';
 import { NICHES } from '@/domain/niches';
 import { SECTORS, SECTOR_KEYS, type SectorKey } from '@/domain/sectors';
@@ -28,6 +29,13 @@ export default async function NichesPage() {
                 <h3>{t(SECTORS[k].name)}</h3>
               </div>
               <div className="block-body small">
+                <div className="badge-row">
+                  {NICHES.filter((n) => n.sector === k).map((n) => (
+                    <a key={n.slug} href={`/marketplace?niche=${n.slug}`} title={t(n.name)}>
+                      <CategoryBadge niche={n.slug} size={36} />
+                    </a>
+                  ))}
+                </div>
                 {t(SECTORS[k].blurb)} · {t(`${NICHES.filter((n) => n.sector === k).length} categories`)}
               </div>
             </div>

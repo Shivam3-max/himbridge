@@ -3443,3 +3443,305 @@ a.service-card:hover {
     margin: 0;
   }
 }
+
+/* =====================================================================
+   Category icons, covers, grids and pickers
+   ===================================================================== */
+.cat-badge {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--c);
+  background: color-mix(in srgb, var(--c) 12%, #fff);
+  border: 1px solid color-mix(in srgb, var(--c) 30%, #fff);
+}
+.cat-cover {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #fff;
+  background:
+    radial-gradient(circle at 75% 20%, color-mix(in srgb, var(--c) 55%, #fff) 0, transparent 55%),
+    linear-gradient(135deg, var(--c), color-mix(in srgb, var(--c) 60%, #0b2a5b));
+}
+.cat-cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.07) 0 1px, transparent 1px 14px);
+}
+.cat-cover .cat-cover-ic {
+  position: relative;
+  opacity: 0.92;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.18));
+}
+.cat-cover.pthumb {
+  background:
+    radial-gradient(circle at 75% 20%, color-mix(in srgb, var(--c) 55%, #fff) 0, transparent 55%),
+    linear-gradient(135deg, var(--c), color-mix(in srgb, var(--c) 60%, #0b2a5b));
+}
+.cat-cover.pthumb::before {
+  background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.07) 0 1px, transparent 1px 14px);
+}
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+.cat-grid.compact {
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.cat-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  padding: 14px 8px 12px;
+  border: 1px solid var(--line);
+  border-bottom: 3px solid var(--c);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  transition:
+    transform 0.15s,
+    border-color 0.15s;
+}
+.cat-tile:hover {
+  text-decoration: none;
+  transform: translateY(-2px);
+  border-color: var(--c);
+}
+.cat-tile.on {
+  background: color-mix(in srgb, var(--c) 8%, #fff);
+  border-color: var(--c);
+  box-shadow: inset 0 0 0 1px var(--c);
+}
+.cat-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--navy);
+  line-height: 1.25;
+}
+.cat-count {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.cat-grid.compact .cat-tile {
+  padding: 10px 6px 8px;
+  gap: 4px;
+}
+.cat-grid.compact .cat-name {
+  font-size: 0.75rem;
+}
+
+.cat-picker fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 10px;
+}
+.cat-picker legend {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.cat-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 8px;
+}
+.cat-picker label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  background: #fff;
+}
+.cat-picker input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.cat-picker label:has(input:checked) {
+  border-color: var(--c);
+  background: color-mix(in srgb, var(--c) 8%, #fff);
+  box-shadow: inset 0 0 0 1px var(--c);
+  color: var(--navy);
+  font-weight: 700;
+}
+.cat-picker label:has(input:focus-visible) {
+  outline: 2px solid var(--blue);
+  outline-offset: 1px;
+}
+
+.empty-rich {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 24px 16px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  background: var(--tint);
+}
+.empty-rich > b {
+  color: var(--navy);
+  font-size: 1.02rem;
+}
+.empty-rich p {
+  margin: 0 0 8px;
+  max-width: 560px;
+}
+.empty-rich .cat-grid {
+  width: 100%;
+  text-align: center;
+}
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.badge-row a:hover .cat-badge {
+  transform: scale(1.08);
+}
+.niche-card .cat-badge {
+  margin-top: 2px;
+}
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--navy);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.avatar.lg {
+  width: 96px;
+  height: 96px;
+  font-size: 1.8rem;
+}
+.profile-cover {
+  height: 200px;
+  border-radius: var(--radius);
+}
+.profile-cover-name {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  z-index: 1;
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+.profile-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 200px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--tint);
+}
+.project-main {
+  align-items: center;
+}
+.cat-grid:not(.compact) {
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+@media (max-width: 1100px) {
+  .cat-grid:not(.compact) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .cat-grid:not(.compact) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* Compact category strip (marketplace): one scrollable row. */
+.cat-grid.compact {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-bottom: 6px;
+}
+.cat-grid.compact .cat-tile {
+  flex: 0 0 118px;
+  scroll-snap-align: start;
+}
+/* Category photos */
+.cat-badge.photo {
+  overflow: hidden;
+  background: color-mix(in srgb, var(--c) 15%, #fff);
+  border: 2px solid #fff;
+  box-shadow:
+    0 0 0 2px var(--c),
+    0 2px 6px rgba(16, 24, 40, 0.15);
+}
+.cat-badge.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.cat-cover.photo::before {
+  z-index: 1;
+  background-image: linear-gradient(180deg, rgba(6, 22, 50, 0.08) 40%, rgba(6, 22, 50, 0.45));
+}
+.cat-cover.pthumb.photo::before {
+  background-image: linear-gradient(180deg, rgba(6, 22, 50, 0.05) 50%, rgba(6, 22, 50, 0.35));
+}
+.cat-cover .cat-cover-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cat-cover > .chip,
+.cat-cover > .profile-cover-name {
+  z-index: 2;
+}
+.cat-grid:not(.compact) .cat-tile:has(.cat-photo) {
+  padding: 0 0 10px;
+  overflow: hidden;
+}
+.cat-photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 4px;
+  transition: transform 0.25s;
+}
+.cat-tile:hover .cat-photo {
+  transform: scale(1.04);
+}
+.cat-grid:not(.compact) .cat-tile:has(.cat-photo) .cat-name,
+.cat-grid:not(.compact) .cat-tile:has(.cat-photo) .cat-count {
+  padding: 0 6px;
+}

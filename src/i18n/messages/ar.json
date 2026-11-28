@@ -1858,5 +1858,17 @@
  "Your studio website or portfolio": "موقع الاستوديو أو ملف أعمالك",
  "Your target": "هدفك",
  "Buyer Dashboard": "لوحة تحكم المشتري",
- "Best offer value": "قيمة أفضل عرض"
+ "Best offer value": "قيمة أفضل عرض",
+ "{#} products": "{#} منتجات",
+ "All {#} categories & research →": "جميع الفئات الـ {#} والأبحاث ←",
+ "Browse by category": "تصفح حسب الفئة",
+ "Every category below is open for sourcing today: tell us what you need and our team will match verified makers.": "جميع الفئات أدناه متاحة للتوريد اليوم: أخبرنا بما تحتاجه وسيطابقك فريقنا مع مصنّعين موثّقين.",
+ "Need something now? Pick a category and our sourcing desk will find makers for you.": "تحتاج شيئًا الآن؟ اختر فئة وسيجد مكتب التوريد لدينا المصنّعين المناسبين لك.",
+ "New listings from verified Indian makers appear here.": "تظهر هنا المنتجات الجديدة من المصنّعين الهنود الموثّقين.",
+ "no live listings yet.": "لا توجد منتجات منشورة بعد.",
+ "No products match these filters yet.": "لا توجد منتجات تطابق عوامل التصفية هذه بعد.",
+ "Our catalogue is opening: verified makers are listing their first products.": "كتالوجنا قيد الإطلاق: يضيف المصنّعون الموثّقون منتجاتهم الأولى.",
+ "Our first manufacturers are being verified.": "يجري التحقق من أوائل المصنّعين لدينا.",
+ "Sourcing on request": "توريد عند الطلب",
+ "Your products appear under this category, with its photo, across the marketplace.": "ستظهر منتجاتك ضمن هذه الفئة، مع صورتها، في جميع أنحاء السوق."
 }

@@ -158,3 +158,11 @@ describe('payment split by order size', () => {
     expect(advancePctFor(orderTier(185_000))).toBe(30);
   });
 });
+
+describe('category icons', () => {
+  it('every category has its own icon', async () => {
+    const { NICHES } = await import('../src/domain/niches');
+    const { hasCategoryIcon } = await import('../src/components/catalog/category-icon');
+    expect(NICHES.filter((n) => !hasCategoryIcon(n.slug)).map((n) => n.slug)).toEqual([]);
+  });
+});

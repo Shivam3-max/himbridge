@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { StageBadge, StageSelect, StageTrack } from '@/components/sourcing/sourcing-ui';
+import { CategoryBadge } from '@/components/catalog/category-icon';
 import { Badge, Block, Empty, SectorChip } from '@/components/ui/primitives';
 import { nicheName } from '@/domain/niches';
 import {
@@ -171,7 +172,8 @@ export default async function SourcingPage() {
         return (
           <Link key={r.id} href={`/dashboard/sourcing/${r.id}`} className="project-card">
             <div className="project-main">
-              <div>
+              <CategoryBadge niche={r.niche} size={42} />
+              <div style={{ flex: 1 }}>
                 <b>{r.title}</b>
                 <div className="tiny muted">
                   {r.code} · {t(REQUEST_KIND_INFO[r.kind].label)} · {t(`${r.items.length} items`)} · {r.destination}

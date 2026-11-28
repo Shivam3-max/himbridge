@@ -1,11 +1,12 @@
 'use client';
 
+import { CategoryBadge } from './category-icon';
 import Link from 'next/link';
 import { useState } from 'react';
 import { NICHES, nicheScore } from '@/domain/niches';
 import { SECTORS, SECTOR_KEYS, type SectorKey } from '@/domain/sectors';
 import { useT } from '@/i18n/client';
-import { Badge, SectorChip, Placeholder, ScoreBar } from '../ui/primitives';
+import { Badge, SectorChip, ScoreBar } from '../ui/primitives';
 
 const TABS: readonly (readonly ['' | SectorKey, string])[] = [['', 'All'], ...SECTOR_KEYS.map((k) => [k, SECTORS[k].name] as const)];
 
@@ -57,7 +58,7 @@ export function NicheScorecard() {
             {rows.map((n) => (
               <tr key={n.slug}>
                 <td>
-                  <Placeholder className="niche-img" />
+                  <CategoryBadge niche={n.slug} size={36} />
                 </td>
                 <td>
                   <Link href={`/marketplace?niche=${n.slug}`}>
