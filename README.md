@@ -8,10 +8,16 @@ Requires Node.js 22.13+ (uses built-in `node:sqlite`, no npm install needed).
 
 ```bash
 npm run dev        # http://localhost:3870
-npm run reset-db   # stop the server first; wipes data + uploads, re-seeds on next start
+npm run reset-db   # stop the server first; wipes local data + uploads
 ```
 
-Demo logins (password `Himbridge@123`): admin@himbridge.trade · buyer@himbridge.trade · vendor.in@himbridge.trade (Crafted) · vendor.cn@himbridge.trade (Engineered) · kerala@himbridge.trade (pending vendor) · logistics@himbridge.trade
+No demo data is seeded. On first start the server creates one admin account from `HIMBRIDGE_ADMIN_EMAIL` and
+`HIMBRIDGE_ADMIN_PASSWORD` (8+ characters). Vendors, buyers and logistics partners register themselves; the admin verifies
+vendors, and verified vendors list products.
+
+Environment variables: `PORT`, `PUBLIC_URL` (e.g. `https://himbridge.com`, used in email links and to mark the session
+cookie Secure), `HIMBRIDGE_DATA_DIR` (database + uploads; in production keep it outside the deployed app folder so
+redeploys never wipe data), `HIMBRIDGE_ADMIN_EMAIL`, `HIMBRIDGE_ADMIN_PASSWORD`.
 
 ## What works
 

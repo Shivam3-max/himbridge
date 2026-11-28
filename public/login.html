@@ -32,12 +32,6 @@
     </form>
   </div>
   <div class="grid" style="align-content:start">
-    <div class="block">
-      <div class="block-head green"><h3>Demo accounts</h3><span class="tiny muted">Password: <b>Himbridge@123</b></span></div>
-      <div class="block-body">
-        <table class="demo-list" id="demo"></table>
-      </div>
-    </div>
     <div id="side-img"></div>
   </div>
 </div>
@@ -46,10 +40,7 @@
 <script type="module">
 import { api, formData, showMsg, qs, ph, PEAK } from '/assets/app.js';
 qs('#side-img').innerHTML = `<div class="side-banner"><img src="/assets/img/login-warehouse.jpg" alt="" loading="lazy"><div><span class="kicker">${PEAK}Secure portal</span><p>One login for buyers, makers and logistics partners.</p></div></div>`;
-const DEMO = [['Admin (Himbridge team)', 'admin@himbridge.trade'], ['Buyer — USA', 'buyer@himbridge.trade'], ['Buyer — UAE', 'omar@gulfliving.ae'], ['Vendor — Crafted', 'vendor.in@himbridge.trade'], ['Vendor — Engineered', 'vendor.cn@himbridge.trade'], ['Vendor — pending KYC', 'kerala@himbridge.trade'], ['Logistics partner', 'logistics@himbridge.trade']];
 const f = qs('#f');
-qs('#demo').innerHTML = DEMO.map(([r, e]) => `<tr><td><b>${r}</b><br><span class="tiny muted">${e}</span></td><td class="right"><button class="btn sm ghost" data-e="${e}">Use</button></td></tr>`).join('');
-qs('#demo').onclick = (ev) => { const e = ev.target.dataset.e; if (e) { f.email.value = e; f.password.value = 'Himbridge@123'; f.requestSubmit(); } };
 const next = new URLSearchParams(location.search).get('next');
 const safeNext = next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard';
 f.onsubmit = async (e) => {

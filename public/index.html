@@ -207,6 +207,8 @@ qs('#niche-grid').innerHTML = meta.niches.filter((n) => n.phase === 1).map((n) =
     <span><b>${esc(n.name)}</b><small>${esc(n.clusters)}</small><br><small>→ ${esc(n.markets)}</small></span></a>`).join('');
 
 api('/api/stats').then((s) => {
+  // A new portal has no vendors yet: hide the counters until the first manufacturer is verified.
+  if (!s.vendors) { qs('#stats').closest('section').hidden = true; return; }
   document.querySelectorAll('#stats [data-k]').forEach((el) => {
     const k = el.dataset.k;
     el.textContent = k === 'tradeValue' ? usd(s[k], 0) : fmtNum(s[k]);
@@ -219,7 +221,10 @@ api('/api/notices').then((ns) => {
       <span><span class="badge info">${esc(n.tag)}</span>${i < 2 ? '<span class="new-tag">NEW</span>' : ''}<div class="t">${esc(n.title)}</div></span></li>`;
   }).join('');
 });
-api('/api/products').then((ps) => { qs('#products').innerHTML = ps.slice(0, 8).map((p) => productCard(p, niches)).join(''); });
+api('/api/products').then((ps) => {
+  qs('#products').innerHTML = ps.length ? ps.slice(0, 8).map((p) => productCard(p, niches)).join('')
+    : '<div class="empty" style="grid-column:1/-1">New products from verified manufacturers will appear here soon. <a href="/register">Register as a vendor</a> or <a href="/niches">browse the categories</a>.</div>';
+});
 </script>
 </body>
 </html>

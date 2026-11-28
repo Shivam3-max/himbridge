@@ -1,5 +1,5 @@
 // Shared portal shell: header, nav, ticker, footer, API + helpers.
-export const BRAND = { name: 'Himbridge', full: 'Himbridge Global Trade Portal', tagline: 'Verified Sourcing · Export to the World', helpline: '+91 11 4000 0000', email: 'helpdesk@himbridge.trade' };
+export const BRAND = { name: 'Himbridge', full: 'Himbridge Global Trade Portal', tagline: 'Verified Sourcing · Export to the World', helpline: '+91 98057 00090', tel: '+919805700090', email: 'info@himbridge.com' };
 
 export async function api(path, opts = {}) {
   const res = await fetch(path, {
@@ -191,7 +191,7 @@ async function renderShell() {
         <a href="#main">Skip to main content</a><span class="sep"></span>
         <span class="fs-btns" aria-label="Text size"><button data-fs="13">A-</button> <button data-fs="15">A</button> <button data-fs="17">A+</button></span><span class="sep"></span>
         <select aria-label="Language" id="lang">${Object.entries(LANGS).map(([k, v]) => `<option value="${k}" ${k === LANG ? 'selected' : ''}>${v.label}</option>`).join('')}</select><span class="sep"></span>
-        <span><span data-i18n="helpdesk">Help desk</span>: <b dir="ltr">${BRAND.helpline}</b></span>
+        <span><span data-i18n="helpdesk">Help desk</span>: <b dir="ltr"><a href="tel:${BRAND.tel}">${BRAND.helpline}</a></b></span>
       </div></div></div>
     <div class="band"></div>
     <div class="brand-row"><div class="wrap">
@@ -234,7 +234,7 @@ async function renderShell() {
     footer.innerHTML = `<footer class="footer"><div class="wrap footer-cols">
       <div><a class="brand" href="/">${LOGO}<div><div class="brand-name" style="font-size:1.35rem">${BRAND.name}</div><div class="brand-tag">Global Trade Portal</div></div></a>
         <p class="small muted" style="margin-top:12px" data-i18n="footabout">One trusted desk for verified manufacturers, quality inspection, export documentation and door-to-door logistics.</p>
-        <p class="small"><b>Help desk:</b> ${BRAND.helpline}<br><b>Email:</b> ${BRAND.email}<br><span class="muted">Mon–Sat, 09:30–18:30 IST</span></p></div>
+        <p class="small"><b>Help desk:</b> <a href="tel:${BRAND.tel}" dir="ltr">${BRAND.helpline}</a><br><b>Email:</b> <a href="mailto:${BRAND.email}">${BRAND.email}</a><br><span class="muted">Mon–Sat, 09:30–18:30 IST</span></p></div>
       <div><h4 data-i18n="fbuyers">For Buyers</h4><ul><li><a href="/marketplace">Browse marketplace</a></li><li><a href="/dashboard#post-rfq">Post an RFQ</a></li><li><a href="/track">Track shipment</a></li><li><a href="/tools#landed">Landed cost calculator</a></li><li><a href="/register?role=buyer">Buyer registration</a></li></ul></div>
       <div><h4 data-i18n="fvendors">For Vendors</h4><ul><li><a href="/register?role=vendor">Vendor registration</a></li><li><a href="/niches">Niche opportunities</a></li><li><a href="/tools#docs">Export documents</a></li><li><a href="/about#verification">Verification process</a></li><li><a href="/about#programme">Founding Vendor Programme</a></li></ul></div>
       <div><h4 data-i18n="fpartners">Partners</h4><ul><li><a href="/register?role=logistics">Logistics partner sign-up</a></li><li><a href="/about#ecosystem">Ecosystem</a></li><li><a href="/tools#incoterms">Incoterms guide</a></li><li><a href="/tools#hs">HS code finder</a></li></ul></div>

@@ -74,7 +74,7 @@ try {
     <div class="parties">
       ${party('Seller / manufacturer', o.vendor_company, [o.vendor_cluster, o.vendor_country])}
       ${party('Buyer / consignee', o.buyer_company, [o.buyer_name, o.buyer_country, o.buyer_email, o.buyer_phone])}
-      ${party('Trade facilitator', 'Himbridge Global Trade Portal', ['helpdesk@himbridge.trade', 'Escrow & milestone payments'])}
+      ${party('Trade facilitator', 'Himbridge Global Trade Portal', ['info@himbridge.com', 'Escrow & milestone payments'])}
     </div>
     <div class="terms">
       <div><h4>Incoterm</h4>${esc(o.incoterm || 'FOB')}</div><div><h4>Country of origin</h4>${esc(origin)}</div>

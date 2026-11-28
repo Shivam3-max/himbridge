@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Himbridge Global Trade Portal — verified sourcing, export to the world",
+  "description": "Himbridge Global Trade Portal \u2014 verified sourcing, export to the world",
   "scripts": {
+    "build": "node -e \"console.log('No build step: static files are served by server/server.js')\"",
     "dev": "node --watch server/server.js",
-    "start": "node server/server.js",
+    "start": "node server/start.js",
     "reset-db": "rm -rf data/himbridge.db data/himbridge.db-wal data/himbridge.db-shm data/uploads",
     "build-map": "node tools/build-world-map.mjs"
   },
-  "engines": { "node": ">=22.13" }
+  "engines": {
+    "node": ">=22.13"
+  }
 }

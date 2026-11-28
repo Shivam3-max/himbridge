@@ -141,10 +141,11 @@ Later modules: escrow/payment milestones (LC, advance + balance), sample orders,
 - **Homepage map:** `tools/build-world-map.mjs` generates `public/assets/map/world-network.svg` from Natural Earth data (public domain).
 - **Scale-up path:** PostgreSQL, object storage (S3/R2) for uploads, real email provider, payment gateway / escrow partner, full-page translations.
 
-### Demo logins (password for all: `Himbridge@123`)
+### Accounts
 
-| Role | Email |
-|---|---|
+No demo accounts. The admin login is created on first start from `HIMBRIDGE_ADMIN_EMAIL` / `HIMBRIDGE_ADMIN_PASSWORD` (see README).
+
+---|---|
 | Admin | admin@himbridge.trade |
 | Buyer | buyer@himbridge.trade |
 | Vendor (Crafted) | vendor.in@himbridge.trade |

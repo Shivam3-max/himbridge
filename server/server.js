@@ -3,13 +3,13 @@ import { readFile, stat, writeFile, unlink, mkdir } from 'node:fs/promises';
 import { join, normalize, extname, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomBytes, createHash } from 'node:crypto';
-import { db, hashPassword, checkPassword, createPayments } from './db.js';
+import { db, DATA_DIR, hashPassword, checkPassword, createPayments } from './db.js';
 import { NICHES, ORDER_FLOW, STATUS_OWNER } from './data.js';
 
 const PORT = Number(process.env.PORT) || 3870;
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PUBLIC = join(ROOT, 'public');
-const UPLOADS = join(ROOT, 'data', 'uploads');
+const UPLOADS = join(DATA_DIR, 'uploads');
 const PUBLIC_URL = process.env.PUBLIC_URL || '';
 const SESSION_DAYS = 7;
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.pdf': 'application/pdf', '.txt': 'text/plain; charset=utf-8', '.ico': 'image/x-icon', '.json': 'application/json' };
@@ -51,7 +51,7 @@ const str = (v, max = 500) => (typeof v === 'string' ? v.trim().slice(0, max) : 
 const num = (v) => { const n = Number(v); return Number.isFinite(n) ? n : NaN; };
 const plain = (rows) => rows.map((r) => ({ ...r }));
 function sessionCookie(token, maxAge) {
-  return `hbg_sid=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${maxAge}`;
+  return `hbg_sid=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${maxAge}${PUBLIC_URL.startsWith('https:') ? '; Secure' : ''}`;
 }
 function startSession(userId) {
   const token = randomBytes(32).toString('hex');
